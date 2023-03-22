@@ -24,3 +24,9 @@ spring:
       getter: none
       setter: none
       is-getter: none
+logging:
+  level:
+    root: WARN
+    com.vorsa.restaurantvoting: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security.web.FilterChainProxy: DEBUG
