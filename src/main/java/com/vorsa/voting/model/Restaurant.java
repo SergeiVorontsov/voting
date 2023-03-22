@@ -1,6 +1,5 @@
 package com.vorsa.voting.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,7 +9,6 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
-@JsonIgnoreProperties(value = {"user", "menu"})
 @Entity
 @Table(name = "restaurant", uniqueConstraints = {
         @UniqueConstraint(

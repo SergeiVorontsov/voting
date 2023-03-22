@@ -4,4 +4,6 @@ HELP.md
 *.iws
 *.iml
 *.ipr
-/db/
+db
+target
+out

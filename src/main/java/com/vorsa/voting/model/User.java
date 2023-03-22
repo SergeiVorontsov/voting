@@ -12,7 +12,6 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.util.List;
 import java.util.Set;
 
-@JsonIgnoreProperties(value = {"restaurants"})
 @Entity
 @Table(name = "users")
 @Getter
