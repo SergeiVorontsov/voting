@@ -5,6 +5,7 @@ import com.vorsa.voting.model.Restaurant;
 import com.vorsa.voting.repository.MealRepository;
 import com.vorsa.voting.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class RestaurantController extends AbstractController {
     private MealRepository mealRepository;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<Restaurant> getAll() {
         log.info("get all restaurants");
         return RestaurantRepository.findAll();

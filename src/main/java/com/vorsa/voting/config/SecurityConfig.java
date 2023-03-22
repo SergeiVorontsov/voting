@@ -1,13 +1,13 @@
 package com.vorsa.voting.config;
 
 import com.vorsa.voting.AuthUser;
-import com.vorsa.voting.model.Role;
 import com.vorsa.voting.model.User;
 import com.vorsa.voting.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,8 +19,11 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Optional;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @AllArgsConstructor
 @Slf4j
 public class SecurityConfig {
@@ -46,10 +49,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeHttpRequests()
-                .requestMatchers("/api/v1/**").hasRole(Role.USER.name())
-                .and().httpBasic()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .authorizeHttpRequests().anyRequest().authenticated()
+                .and().httpBasic(withDefaults())
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable()
                 .build();
     }
