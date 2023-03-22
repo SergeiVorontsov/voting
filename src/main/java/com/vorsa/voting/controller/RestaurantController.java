@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("restaurants")
+@RequestMapping("api/v1/restaurants")
 public class RestaurantController extends AbstractController {
 
     @Autowired

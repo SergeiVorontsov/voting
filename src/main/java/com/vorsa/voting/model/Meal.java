@@ -1,5 +1,6 @@
 package com.vorsa.voting.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -35,5 +36,6 @@ public class Meal extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull
     @ToString.Exclude
+    @JsonBackReference
     private Restaurant restaurant;
 }
