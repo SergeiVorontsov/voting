@@ -1,4 +1,4 @@
-package com.vorsa.voting;
+package com.vorsa.voting.web.user;
 
 import com.vorsa.voting.model.User;
 import lombok.Getter;

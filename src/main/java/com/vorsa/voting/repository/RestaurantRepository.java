@@ -1,8 +1,6 @@
 package com.vorsa.voting.repository;
 
-import com.vorsa.voting.model.Meal;
 import com.vorsa.voting.model.Restaurant;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +12,9 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface RestaurantRepository extends JpaRepository<Restaurant, Integer> {
 
-    @EntityGraph(attributePaths = {"menu"}, type = EntityGraph.EntityGraphType.LOAD)
-    @Query("SELECT r FROM Restaurant r WHERE r.id=?1")
-    Optional<Restaurant> getWithMenu(int id);
+    @Query("SELECT r FROM Restaurant r JOIN FETCH r.menu m WHERE r.id=?1 AND m.publicationDate =?2")
+    Optional<Restaurant> getWithMenu(int id, LocalDate now);
+
+    @Query("SELECT r FROM Restaurant r JOIN FETCH r.menu m WHERE m.publicationDate = (SELECT MAX (publicationDate) from Meal WHERE restaurant.id=r.id )")
+    List<Restaurant> getAllWithMenu();
 }

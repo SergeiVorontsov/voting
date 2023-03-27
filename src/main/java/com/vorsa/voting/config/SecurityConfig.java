@@ -1,8 +1,8 @@
 package com.vorsa.voting.config;
 
-import com.vorsa.voting.AuthUser;
 import com.vorsa.voting.model.User;
 import com.vorsa.voting.repository.UserRepository;
+import com.vorsa.voting.web.user.AuthUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
