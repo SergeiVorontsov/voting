@@ -14,15 +14,13 @@ import java.time.LocalDate;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "meal_unique_restaurant_date_name_idx",
-                        columnNames = {"restaurant_id", "PUBLICATION_DATE", "name"})})
+                        columnNames = {"restaurant_id", "publication_date", "name"})})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class Meal extends BaseEntity {
-    @Column(name = "name")
-    private String name;
+public class Meal extends NamedEntity {
 
     @Column(name = "price")
     private Long price;

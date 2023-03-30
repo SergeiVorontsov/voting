@@ -1,12 +1,14 @@
 package com.vorsa.voting.config;
 
+import com.vorsa.voting.model.Role;
 import com.vorsa.voting.model.User;
 import com.vorsa.voting.repository.UserRepository;
-import com.vorsa.voting.web.user.AuthUser;
+import com.vorsa.voting.web.AuthUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,7 +28,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity
 @AllArgsConstructor
 @Slf4j
-public class SecurityConfig {
+public class WebSecurityConfig {
 
     private final UserRepository userRepository;
 
@@ -39,7 +41,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         return email -> {
             log.debug("Authenticating '{}'", email);
-            Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email);
+            Optional<User> optionalUser = userRepository.getByEmail(email);
             return new AuthUser(optionalUser.orElseThrow(
                     () -> new UsernameNotFoundException("User '" + email + "' was not found")
             ));
@@ -48,8 +50,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-                .authorizeHttpRequests().anyRequest().authenticated()
+        return http.authorizeHttpRequests()
+                .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.POST, "/api/profile").anonymous()
+                .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .and().httpBasic(withDefaults())
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable()

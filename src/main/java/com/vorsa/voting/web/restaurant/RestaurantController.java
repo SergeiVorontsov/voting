@@ -4,10 +4,12 @@ import com.vorsa.voting.model.Meal;
 import com.vorsa.voting.model.Restaurant;
 import com.vorsa.voting.repository.MealRepository;
 import com.vorsa.voting.repository.RestaurantRepository;
-import com.vorsa.voting.util.ValidationUtil;
+import com.vorsa.voting.util.validation.ValidationUtil;
+import com.vorsa.voting.web.user.AdminUserController;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +23,18 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/v1/restaurants")
+@RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 @Slf4j
+// TODO: cache, update(), delete()
 public class RestaurantController {
+
+    static final String REST_URL = "/api/restaurants";
 
     private RestaurantRepository restaurantRepository;
     private MealRepository mealRepository;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<Restaurant> getAll() {
         log.info("get all restaurants");
         return restaurantRepository.findAll();
@@ -55,7 +59,6 @@ public class RestaurantController {
     }
 
     @GetMapping("{id}/with-menu")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Optional<Restaurant> getWithMenu(@PathVariable int id) {
         log.info("get restaurant with menu by id: {}", id);
         return restaurantRepository.getWithMenu(id, LocalDate.now());
@@ -63,13 +66,14 @@ public class RestaurantController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<Restaurant> add(@Valid @RequestBody Restaurant restaurant) {
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
         log.info("add new restaurant {}", restaurant);
         ValidationUtil.checkNew(restaurant);
         restaurant = restaurantRepository.save(restaurant);
-        URI uriOfNewResourse = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/v1/restaurant/{id}")
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL +"/{id}")
                 .buildAndExpand(restaurant.id()).toUri();
-        return ResponseEntity.created(uriOfNewResourse).body(restaurant);
+        return ResponseEntity.created(uriOfNewResource).body(restaurant);
     }
 }

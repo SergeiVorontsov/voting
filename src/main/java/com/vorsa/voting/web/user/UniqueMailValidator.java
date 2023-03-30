@@ -1,0 +1,43 @@
+package com.vorsa.voting.web.user;
+
+import com.vorsa.voting.HasIdAndEmail;
+import com.vorsa.voting.repository.UserRepository;
+import com.vorsa.voting.web.GlobalExceptionHandler;
+import com.vorsa.voting.web.SecurityUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.Errors;
+
+@Component
+@AllArgsConstructor
+public class UniqueMailValidator implements org.springframework.validation.Validator {
+
+    private final UserRepository repository;
+    private final HttpServletRequest request;
+
+    @Override
+    public boolean supports(@NonNull Class<?> clazz) {
+        return HasIdAndEmail.class.isAssignableFrom(clazz);
+    }
+
+    @Override
+    public void validate(@NonNull Object target, @NonNull Errors errors) {
+        HasIdAndEmail user = ((HasIdAndEmail) target);
+        if (StringUtils.hasText(user.getEmail())) {
+            repository.getByEmail(user.getEmail().toLowerCase())
+                    .ifPresent(dbUser -> {
+                        if (request.getMethod().equals("PUT")) {
+                            int dbId = dbUser.id();
+                            if (user.getId() != null && dbId == user.id()) return;
+                            String requestURI = request.getRequestURI();
+                            if (requestURI.endsWith("/" + dbId) || (dbId == SecurityUtil.authId() && requestURI.contains("/profile")))
+                                return;
+                        }
+                        errors.rejectValue("email", "", GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL);
+                    });
+        }
+    }
+}

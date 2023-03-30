@@ -10,8 +10,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Transactional(readOnly = true)
-public interface MealRepository extends JpaRepository<Meal, Integer> {
+public interface MealRepository extends BaseRepository <Meal>{
+    @Query("SELECT m FROM Meal m JOIN FETCH m.restaurant " +
+            "WHERE m.publicationDate=:publicationDate AND m.restaurant.id=:restaurantId ORDER BY m.name ASC")
 
-    @Query("SELECT m FROM Meal m JOIN FETCH m.restaurant WHERE m.publicationDate=:publicationDate AND m.restaurant.id=:restaurantId ORDER BY m.name ASC")
-    List<Meal> getMenu(@Param("restaurantId") int userId, @Param("publicationDate") LocalDate publicationDate);
+    List<Meal> getMenu(int restaurantId, LocalDate publicationDate);
 }

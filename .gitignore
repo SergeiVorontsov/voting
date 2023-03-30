@@ -1,9 +1,10 @@
 HELP.md
-### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
+*.patch
 db
-target
 out
+log
+target

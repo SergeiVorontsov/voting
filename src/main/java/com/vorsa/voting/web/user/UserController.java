@@ -1,31 +1,22 @@
 package com.vorsa.voting.web.user;
 
-import com.vorsa.voting.model.User;
 import com.vorsa.voting.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping(value = UserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 @Slf4j
+@CacheConfig(cacheNames = "users")
+// TODO: cache, all endpoints
 public class UserController {
+    static final String REST_URL = "/api/users";
 
     private UserRepository userRepository;
 
-    @GetMapping()
-    public List<User> list() {
-        log.info("findByLastName: {}", "last");
-        return userRepository.findByLastNameContainingIgnoreCase("last");
-    }
-
-/*    @GetMapping("/with-votes")
-    public User getWithVotes() {
-        return super.getWithVotes(authUserId());
-    }*/
 }

@@ -9,10 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
-public interface UserRepository extends JpaRepository<User, Integer> {
-
-    @Query("SELECT u FROM User u WHERE u.email = LOWER(:email)")
-    Optional<User> findByEmailIgnoreCase(String email);
-
-    List<User> findByLastNameContainingIgnoreCase(String lastName);
+public interface UserRepository extends BaseRepository<User> {
+    Optional<User> getByEmail(String email);
 }
