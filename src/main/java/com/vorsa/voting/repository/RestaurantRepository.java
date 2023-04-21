@@ -13,6 +13,11 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
     @Query("SELECT r FROM Restaurant r JOIN FETCH r.menu m WHERE r.id=:id AND m.publicationDate =:now")
     Optional<Restaurant> getWithMenu(int id, LocalDate now);
 
-    @Query("SELECT r FROM Restaurant r JOIN FETCH r.menu m WHERE m.publicationDate = (SELECT MAX (publicationDate) from Meal WHERE restaurant.id=r.id )")
+    //the last publication date
+   /* @Query("SELECT r FROM Restaurant r JOIN FETCH r.menu m WHERE m.publicationDate = (SELECT MAX (publicationDate) from Meal WHERE restaurant.id=r.id )")
+    List<Restaurant> getAllWithMenu();*/
+
+    //the today publication date
+    @Query("SELECT r FROM Restaurant r  LEFT JOIN FETCH r.menu m WHERE m.publicationDate = current_date")
     List<Restaurant> getAllWithMenu();
 }

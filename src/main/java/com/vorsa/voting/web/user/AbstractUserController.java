@@ -1,14 +1,11 @@
 package com.vorsa.voting.web.user;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import com.vorsa.voting.model.User;
 import com.vorsa.voting.repository.UserRepository;
-import com.vorsa.voting.util.UserUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 
 @Slf4j
 public abstract class AbstractUserController {
@@ -24,18 +21,13 @@ public abstract class AbstractUserController {
         binder.addValidators(emailValidator);
     }
 
-    public ResponseEntity<User> get(int id) {
+    public User get(int id) {
         log.info("get {}", id);
-        return ResponseEntity.of(repository.findById(id));
+        return repository.getExisted(id);
     }
 
-    @CacheEvict(value = "users", allEntries = true)
     public void delete(int id) {
         log.info("delete {}", id);
         repository.deleteExisted(id);
-    }
-
-    protected User prepareAndSave(User user) {
-        return repository.save(UserUtil.prepareToSave(user));
     }
 }

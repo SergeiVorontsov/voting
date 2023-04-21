@@ -2,8 +2,7 @@ package com.vorsa.voting.web.user;
 
 import com.vorsa.voting.HasIdAndEmail;
 import com.vorsa.voting.repository.UserRepository;
-import com.vorsa.voting.web.GlobalExceptionHandler;
-import com.vorsa.voting.web.SecurityUtil;
+import com.vorsa.voting.web.AuthUser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.lang.NonNull;
@@ -14,6 +13,7 @@ import org.springframework.validation.Errors;
 @Component
 @AllArgsConstructor
 public class UniqueMailValidator implements org.springframework.validation.Validator {
+    public static final String EXCEPTION_DUPLICATE_EMAIL = "User with this email already exists";
 
     private final UserRepository repository;
     private final HttpServletRequest request;
@@ -27,16 +27,21 @@ public class UniqueMailValidator implements org.springframework.validation.Valid
     public void validate(@NonNull Object target, @NonNull Errors errors) {
         HasIdAndEmail user = ((HasIdAndEmail) target);
         if (StringUtils.hasText(user.getEmail())) {
-            repository.getByEmail(user.getEmail().toLowerCase())
+            repository.findByEmailIgnoreCase(user.getEmail())
                     .ifPresent(dbUser -> {
-                        if (request.getMethod().equals("PUT")) {
+                        if (request.getMethod().equals("PUT")) {  // UPDATE
                             int dbId = dbUser.id();
+
+                            // it is ok, if update ourselves
                             if (user.getId() != null && dbId == user.id()) return;
+
+                            // Workaround for update with user.id=null in request body
+                            // ValidationUtil.assureIdConsistent called after this validation
                             String requestURI = request.getRequestURI();
-                            if (requestURI.endsWith("/" + dbId) || (dbId == SecurityUtil.authId() && requestURI.contains("/profile")))
+                            if (requestURI.endsWith("/" + dbId) || (dbId == AuthUser.authId() && requestURI.contains("/profile")))
                                 return;
                         }
-                        errors.rejectValue("email", "", GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL);
+                        errors.rejectValue("email", "", EXCEPTION_DUPLICATE_EMAIL);
                     });
         }
     }

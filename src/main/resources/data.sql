@@ -1,19 +1,19 @@
-INSERT INTO USERS (EMAIL, NAME, PASSWORD)
-VALUES ('user@yandex.ru', 'User', '{noop}password'),
-       ('admin@gmail.com', 'Admin', '{noop}admin');
+INSERT INTO USERS (name, email, password)
+VALUES ('User', 'user@yandex.ru', '{noop}password'),
+       ('Admin', 'admin@gmail.com', '{noop}admin'),
+       ('Guest', 'guest@gmail.com', '{noop}guest');
 
-
-INSERT INTO USER_ROLES (ROLE, USER_ID)
+INSERT INTO USER_ROLE (role, user_id)
 VALUES ('USER', 1),
-       ('USER', 2),
-       ('ADMIN', 2);
+       ('ADMIN', 2),
+       ('USER', 2);
 
 
 INSERT INTO RESTAURANT (NAME, USER_ID)
 VALUES ('Domino"s Pizza', 1),
        ('Pizza Hut', 2);
 
-INSERT INTO MEAL (NAME, PUBLICATION_DATE, PRICE, RESTAURANT_ID)
+INSERT INTO MEAL (name, PUBLICATION_DATE, PRICE, RESTAURANT_ID)
 VALUES ('Филе Миньон', '2023-02-10', 300, 1),
        ('Бефстроганов', '2023-02-10', 100, 1),
        ('Каре ягненка', '2023-02-10', 200, 1),

@@ -6,17 +6,15 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import lombok.Value;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
 public class UserTo extends NamedTo implements HasIdAndEmail {
     @Email
     @NotBlank
-    @Size(max = 100)
-    @NoHtml
+    @Size(max = 128)
+    @NoHtml  // https://stackoverflow.com/questions/17480809
     String email;
 
     @NotBlank
@@ -27,5 +25,10 @@ public class UserTo extends NamedTo implements HasIdAndEmail {
         super(id, name);
         this.email = email;
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "UserTo:" + id + '[' + email + ']';
     }
 }

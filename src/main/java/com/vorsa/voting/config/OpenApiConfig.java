@@ -22,7 +22,13 @@ import org.springframework.context.annotation.Configuration;
         info = @Info(
                 title = "REST API documentation",
                 version = "1.0",
-                description = "Restaurants voting application",
+                description = """
+                        Restaurants voting application
+                        <p></b>Test credentials:</b><br>
+                         - user@yandex.ru / password<br>
+                         - admin@gmail.com / admin<br>
+                         - guest@gmail.com / guest</p>
+                        """,
                 contact = @Contact(name = "Sergey Vorontsov", email = "vorontsov.s@mail.ru")
         ),
         security = @SecurityRequirement(name = "basicAuth")
@@ -36,6 +42,4 @@ public class OpenApiConfig {
                 .pathsToMatch("/api/**")
                 .build();
     }
-
-
 }
