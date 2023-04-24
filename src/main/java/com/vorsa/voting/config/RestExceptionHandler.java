@@ -1,4 +1,4 @@
-package com.vorsa.voting.web;
+package com.vorsa.voting.config;
 
 import com.vorsa.voting.error.*;
 import jakarta.persistence.EntityNotFoundException;

@@ -2,40 +2,31 @@ package com.vorsa.voting.web.restaurant;
 
 import com.vorsa.voting.model.Restaurant;
 import com.vorsa.voting.repository.RestaurantRepository;
-import com.vorsa.voting.util.validation.ValidationUtil;
-import com.vorsa.voting.web.AuthUser;
-import jakarta.validation.Valid;
+import com.vorsa.voting.to.RestaurantTo;
+import com.vorsa.voting.util.RestaurantUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 @Slf4j
-// TODO: cache, AbstractRestaurantController
+// TODO: cache
 public class RestaurantController {
-
     static final String REST_URL = "/api/restaurants";
 
-    @Autowired
     private RestaurantRepository repository;
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
-        log.info("get {}", id);
+        log.info("get restaurant with id={}", id);
         return repository.getExisted(id);
     }
 
@@ -46,36 +37,14 @@ public class RestaurantController {
     }
 
     @GetMapping("with-menu")
-    public List<Restaurant> getAllWithMenu() {
+    public List<RestaurantTo> getAllWithMenu() {
         log.info("get all restaurants with menu");
-        return repository.getAllWithMenu();
+        return RestaurantUtil.getTos(repository.getAllWithMenu());
     }
 
     @GetMapping("{id}/with-menu")
-    public Optional<Restaurant> getWithMenu(@PathVariable int id) {
-        log.info("get restaurant with menu by id: {}", id);
-        return repository.getWithMenu(id);
+    public RestaurantTo getWithMenu(@PathVariable int id) {
+        log.info("get restaurant with id={} with menu", id);
+        return RestaurantUtil.createTo(repository.getExistedWithMenu(id));
     }
-
-
-
-    /*   @GetMapping("{id}")
-       public Optional<Restaurant> get(@PathVariable int id) {
-           log.info("get user by id: {}", id);
-           return restaurantRepositoryImp.restaurantRepository.findById(id);
-       }
-
-       @GetMapping("{id}/menu")
-       public List<Meal> getMenu(@PathVariable int id) {
-           log.info("get restaurant menu by id: {}", id);
-           return mealRepository.getMenu(id, LocalDate.now());
-       }
-
-       @GetMapping("{id}/with-menu")
-       public Optional<Restaurant> getWithMenu(@PathVariable int id) {
-           log.info("get restaurant with menu by id: {}", id);
-           return restaurantRepositoryImp.restaurantRepository.getWithMenu(id, LocalDate.now());
-       }
-   */
-
 }
