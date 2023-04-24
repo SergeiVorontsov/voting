@@ -31,5 +31,5 @@ public class Restaurant extends NamedEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ToString.Exclude
     @Schema(hidden = true)
-    private List<Meal> menu;
+    private List<Menu> menu;
 }
