@@ -28,4 +28,4 @@ VALUES ('Филе Миньон', 300, 1),
 
 INSERT INTO VOTE (VOTING_DATE, RESTAURANT_ID, USER_ID)
 VALUES (current_date(), 1, 1),
-       (current_date(), 1, 2);
+       ('2023-02-10', 1, 2);
