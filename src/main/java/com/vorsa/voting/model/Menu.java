@@ -25,22 +25,21 @@ import java.util.List;
 @ToString(callSuper = true)
 public class Menu extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @NotNull
     @ToString.Exclude
     @JsonIgnore
     private Restaurant restaurant;
 
+    //add to "columnDefinition" "...check (menu_date > current_date()" to constrain menu creation retroactively
     @Column(name = "menu_date", nullable = false, columnDefinition = "date default current_date()", updatable = false)
     @NotNull
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    //@Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDate date = LocalDate.now();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "menu")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @ToString.Exclude
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private List<Meal> meals;
 }

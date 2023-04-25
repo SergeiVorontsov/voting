@@ -27,7 +27,6 @@ public class Meal extends NamedEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @NotNull
     @ToString.Exclude
     @JsonIgnore
     private Menu menu;
