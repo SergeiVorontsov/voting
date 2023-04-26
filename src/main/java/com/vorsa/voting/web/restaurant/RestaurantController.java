@@ -36,13 +36,13 @@ public class RestaurantController {
         return repository.findAll();
     }
 
-    @GetMapping("with-menu")
+    @GetMapping("/with-today-menu")
     public List<RestaurantTo> getAllWithMenu() {
         log.info("get all restaurants with menu");
         return RestaurantUtil.getTos(repository.getAllWithMenu());
     }
 
-    @GetMapping("{id}/with-menu")
+    @GetMapping("/{id}/with-today-menu")
     public RestaurantTo getWithMenu(@PathVariable int id) {
         log.info("get restaurant with id={} with menu", id);
         return RestaurantUtil.createTo(repository.getExistedWithMenu(id));

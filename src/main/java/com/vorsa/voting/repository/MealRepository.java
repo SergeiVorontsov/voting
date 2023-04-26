@@ -15,6 +15,6 @@ public interface MealRepository extends BaseRepository<Meal> {
 
     default Meal getExistedOrBelonged(int userId, int id) {
         return get(id, userId).orElseThrow(
-                () -> new DataConflictException("Menu with id=" + id + "  is not exist or doesn't belong to User id=" + userId));
+                () -> new DataConflictException("Meal with id=" + id + "  is not exist or doesn't belong to User id=" + userId));
     }
 }

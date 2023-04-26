@@ -11,10 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.util.List;
 
 import static com.vorsa.voting.util.validation.ValidationUtil.checkNew;
 
@@ -29,19 +32,33 @@ public class AdminMenuController {
     private MenuRepository repository;
     private MenuService service;
 
-    @GetMapping(value = "{restaurantId}/menus/{menuId}")
-    public Menu get(@PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser, @PathVariable int restaurantId) {
-        log.info("get menu with id={}", menuId);
-        return repository.getExistedOrBelonged(menuId, authUser.id());
+    @GetMapping(value = "/{restaurantId}/menus/{menuId}")
+    public Menu get(@PathVariable int restaurantId, @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
+        int userId = authUser.id();
+        log.info("get menu with id= {} by user with id= {}", menuId, userId);
+        return repository.getExistedOrBelonged(userId, menuId);
     }
 
-    @PostMapping(value = "{restaurantId}/menus",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/{restaurantId}/menus/by-date")
+    public Menu getByDate(@PathVariable int restaurantId, @RequestParam LocalDate date, @AuthenticationPrincipal AuthUser authUser) {
+        int userId = authUser.id();
+        log.info("get menu of restaurant  with id= {} for the date= {} by user with id= {}", restaurantId, date, userId);
+        return repository.getExistedOrBelongedByDate(userId, restaurantId, date);
+    }
+
+    @GetMapping(value = "/{restaurantId}/menus")
+    public List<Menu> getAll(@PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
+        int userId = authUser.id();
+        log.info("get all menus of the restaurant with id= {} by user with id= {}", restaurantId, userId);
+        return repository.getAllExistedOrBelonged(userId, restaurantId);
+    }
+
+    @PostMapping(value = "/{restaurantId}/menus", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<Menu> createWithLocation(@Valid @RequestBody Menu menu, @PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
-        log.info("create {} for restaurant id= {} for user {}", menu, restaurantId, userId);
+        log.info("create {} for restaurant id= {} by user with id= {}", menu, restaurantId, userId);
         checkNew(menu);
-
         Menu created = service.save(restaurantId, userId, menu);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -49,37 +66,13 @@ public class AdminMenuController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-/*    @GetMapping(value = "/{id}/menus")
-    public List<Menu> getAll(@PathVariable int id, @AuthenticationPrincipal AuthUser authUser) {
-        log.info("get menu with id={}", id);
-        return repository.getAllExistedOrBelonged(authUser.id(), id);
-    }
-
-
-    @GetMapping("/{id}/menus/by-date")
-    public Menu getByDate(@PathVariable int id, @RequestParam LocalDate date, @AuthenticationPrincipal AuthUser authUser) {
-        log.info("get menu of restaurant  with id= {} for the date {}", id, date);
-        return repository.getExistedOrBelongedByDate(authUser.id(), id, date);
-    }*/
-
-
-
-/*    @PutMapping(value = "/menus/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping("/{restaurantId}/menus/{menuId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
-    public void update(@Valid @RequestBody Menu menu, @PathVariable int id, @AuthenticationPrincipal AuthUser authUser) {
+    public void delete(@PathVariable int restaurantId, @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
-        log.info("update {} by user {}", menu, userId);
-        assureIdConsistent(menu, id);
-        int restaurantId = repository.getExistedOrBelonged(userId, id).getRestaurant().id();
-        service.save(userId, restaurantId, menu);
-    }*/
-
-/*    @DeleteMapping("/{menuId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal AuthUser authUser, @PathVariable int restaurantId) {
-        log.info("delete {} for user {}", restaurantId, authUser.id());
-        Menu menu = repository.getExistedOrBelonged(authUser.id(), restaurantId);
+        log.info("delete menu with id= {} by user with id= {}", menuId, userId);
+        Menu menu = repository.getExistedOrBelonged(userId, menuId);
         repository.delete(menu);
-    }*/
+    }
 }

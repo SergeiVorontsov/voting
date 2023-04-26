@@ -31,11 +31,11 @@ public class AdminRestaurantController {
     private final RestaurantRepository repository;
     private final RestaurantService service;
 
-
     @GetMapping
     public List<Restaurant> getAll(@AuthenticationPrincipal AuthUser authUser) {
-        log.info("get all admins with id= {} restaurants", authUser.id());
-        return repository.getAllBelonged(authUser.id());
+        int userId = authUser.id();
+        log.info("get all restaurants belong to user with id= {} ", userId);
+        return repository.getAllBelonged(userId);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -64,9 +64,11 @@ public class AdminRestaurantController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
-        log.info("delete {} for user {}", id, authUser.id());
-        Restaurant restaurant = repository.getExistedOrBelonged(authUser.id(), id);
+    @Transactional
+    public void delete(@PathVariable int id, @AuthenticationPrincipal AuthUser authUser) {
+        int userId = authUser.id();
+        log.info("delete {} for user {}", id, userId);
+        Restaurant restaurant = repository.getExistedOrBelonged(userId, id);
         repository.delete(restaurant);
     }
 }

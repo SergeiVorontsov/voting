@@ -31,15 +31,20 @@ public class AdminMealController {
     private MealService service;
 
     @GetMapping(value = "/{restaurantId}/menus/{menuId}/meals/{mealId}")
-    public Meal get(@PathVariable int restaurantId, @PathVariable int menuId, @PathVariable int mealId, @AuthenticationPrincipal AuthUser authUser) {
-        //  log.info("get meal with id={}", mealId);
+    public Meal get(@PathVariable int restaurantId, @PathVariable int menuId, @PathVariable int mealId,
+                    @AuthenticationPrincipal AuthUser authUser) {
+        int userId = authUser.id();
+        log.info("get meal with id= {} by user with id= {}", mealId, userId);
         return repository.getExistedOrBelonged(authUser.id(), mealId);
     }
 
     @PostMapping(value = "/{restaurantId}/menus/{menuId}/meals", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Meal> createWithLocation(@PathVariable int restaurantId, @PathVariable int menuId, @Valid @RequestBody Meal meal, @AuthenticationPrincipal AuthUser authUser) {
-        //  log.info("add {}", meal);
+    public ResponseEntity<Meal> createWithLocation(@Valid @RequestBody Meal meal, @PathVariable int restaurantId,
+                                                   @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
+        int userId = authUser.id();
+        log.info("add {} for thr restaurant with id= {} for the menu with id= {} by user with id ={}",
+                meal, restaurantId, menuId, userId);
         checkNew(meal);
         Meal created = service.save(meal, menuId, authUser.id());
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -53,9 +58,20 @@ public class AdminMealController {
     public void update(@Valid @RequestBody Meal meal, @PathVariable int restaurantId,
                        @PathVariable int menuId, @PathVariable int mealId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
-        //  log.info("update {} for user {}", meal, userId);
+        log.info("update {} by user with id= {}", meal, userId);
         assureIdConsistent(meal, mealId);
         repository.getExistedOrBelonged(userId, mealId);
         service.save(meal, menuId, userId);
+    }
+
+    @DeleteMapping("/{restaurantId}/menus/{menuId}/meals/{mealId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
+    public void delete(@PathVariable int restaurantId,
+                       @PathVariable int menuId, @PathVariable int mealId, @AuthenticationPrincipal AuthUser authUser) {
+        int userId = authUser.id();
+        log.info("delete meal with id= {} by user with id= {}", mealId, userId);
+        Meal meal = repository.getExistedOrBelonged(userId, mealId);
+        repository.delete(meal);
     }
 }
