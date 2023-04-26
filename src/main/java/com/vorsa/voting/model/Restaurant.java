@@ -10,10 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.util.List;
 
 @Entity
-@Table(name = "restaurant", uniqueConstraints = {
-        @UniqueConstraint(
-                name = "restaurant_unique_user_name_idx",
-                columnNames = {"user_id", "name"})})
+@Table(name = "restaurant")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
