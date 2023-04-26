@@ -4,6 +4,7 @@ import com.vorsa.voting.model.User;
 import com.vorsa.voting.to.UserTo;
 import com.vorsa.voting.util.UsersUtil;
 import com.vorsa.voting.web.AuthUser;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,10 @@ import java.net.URI;
 import static com.vorsa.voting.util.validation.ValidationUtil.assureIdConsistent;
 import static com.vorsa.voting.util.validation.ValidationUtil.checkNew;
 
-@RestController
-@RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@RestController
+@Tag(name = "Profile", description = "Profile management APIs")
+@RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 // TODO: cache
 public class ProfileController extends AbstractUserController {
     static final String REST_URL = "/api/profile";

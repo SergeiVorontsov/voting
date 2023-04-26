@@ -4,6 +4,7 @@ import com.vorsa.voting.model.Restaurant;
 import com.vorsa.voting.repository.RestaurantRepository;
 import com.vorsa.voting.to.RestaurantTo;
 import com.vorsa.voting.util.RestaurantUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -14,10 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
-@RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-@AllArgsConstructor
 @Slf4j
+@RestController
+@AllArgsConstructor
+@Tag(name = "Restaurant", description = "Restaurant getting APIs")
+@RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 // TODO: cache
 public class RestaurantController {
     static final String REST_URL = "/api/restaurants";

@@ -4,6 +4,7 @@ import com.vorsa.voting.model.Menu;
 import com.vorsa.voting.repository.MenuRepository;
 import com.vorsa.voting.service.MenuService;
 import com.vorsa.voting.web.AuthUser;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,9 @@ import static com.vorsa.voting.util.validation.ValidationUtil.checkNew;
 
 @Slf4j
 @RestController
-@RequestMapping(value = AdminMenuController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
+@Tag(name = "Menu", description = "Admin menu management APIs")
+@RequestMapping(value = AdminMenuController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminMenuController {
 
     static final String REST_URL = "/api/admin/restaurants";

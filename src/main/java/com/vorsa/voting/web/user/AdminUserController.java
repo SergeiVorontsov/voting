@@ -1,6 +1,7 @@
 package com.vorsa.voting.web.user;
 
 import com.vorsa.voting.model.User;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -19,6 +20,7 @@ import static com.vorsa.voting.util.validation.ValidationUtil.checkNew;
 
 @Slf4j
 @RestController
+@Tag(name = "User", description = "Admin user management APIs")
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 // TODO: cache
 public class AdminUserController extends AbstractUserController {

@@ -4,6 +4,8 @@ import com.vorsa.voting.service.VoteService;
 import com.vorsa.voting.to.VoteTo;
 import com.vorsa.voting.util.VoteUtil;
 import com.vorsa.voting.web.AuthUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import java.net.URI;
 @Slf4j
 @RestController
 @AllArgsConstructor
+@Tag(name = "Vote", description = "Voting for restaurant APIs")
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class VoteController {
     static final String REST_URL = "/api/votes";
@@ -26,6 +29,8 @@ public class VoteController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
+    @Operation(summary = "Make vote for the restaurant by restaurant id")
+    @GetMapping("/tutorials/{id}")
     public ResponseEntity<VoteTo> createWithLocation(@RequestParam int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         log.info("create vote for restaurant id= {} by user {}", restaurantId, authUser.id());
         VoteTo created = VoteUtil.createTo(service.save(authUser.getUser(), restaurantId));
