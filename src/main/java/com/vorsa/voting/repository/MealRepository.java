@@ -13,6 +13,9 @@ public interface MealRepository extends BaseRepository<Meal> {
     @Query("SELECT m FROM Meal m WHERE m.id =:id and m.menu.restaurant.user.id =:userId")
     Optional<Meal> get(int id, int userId);
 
+    @Query("SELECT m FROM Meal m WHERE m.name = LOWER(:name) AND m.menu.id =:menuId")
+    Optional<Meal> findByNameAndMenuIgnoreCase(String name, int menuId);
+
     default Meal getExistedOrBelonged(int mealId, int userId) {
         return get(mealId, userId).orElseThrow(
                 () -> new DataConflictException("Meal with id=" + mealId + "  is not exist or doesn't belong to User id=" + userId));

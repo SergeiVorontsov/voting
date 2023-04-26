@@ -12,7 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "meal_unique_id_menu_id_idx",
-                        columnNames = {"id", "menu_id"})
+                        columnNames = {"name", "menu_id"})
         })
 @Getter
 @Setter

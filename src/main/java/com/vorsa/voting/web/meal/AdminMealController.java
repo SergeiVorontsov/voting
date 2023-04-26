@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -31,6 +32,12 @@ public class AdminMealController {
 
     private MealRepository repository;
     private MealService service;
+    private UniqueNameValidator nameValidator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(nameValidator);
+    }
 
     @GetMapping(value = "/{restaurantId}/menus/{menuId}/meals/{mealId}")
     public Meal get(@PathVariable int restaurantId, @PathVariable int menuId, @PathVariable int mealId,
