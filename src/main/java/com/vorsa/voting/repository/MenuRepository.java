@@ -16,7 +16,7 @@ public interface MenuRepository extends BaseRepository<Menu> {
     Optional<Menu> get(int menuId, int userId);
 
     @Query("SELECT m FROM Menu m WHERE m.date = :date AND m.restaurant.id =:restaurantId and m.restaurant.user.id =:userId")
-    Optional<Menu> getByDate(int restaurantId, int userId, LocalDate date);
+    Optional<Menu> getByDate(int restaurantId, LocalDate date, int userId);
 
     @Query("SELECT m FROM Menu m WHERE m.restaurant.id =:restaurantId and m.restaurant.user.id =:userId")
     List<Menu> getAll(int restaurantId, int userId);
@@ -27,7 +27,7 @@ public interface MenuRepository extends BaseRepository<Menu> {
     }
 
     default Menu getExistedOrBelongedByDate(int userId, int restaurantId, LocalDate date) {
-        return getByDate(restaurantId, userId, date).orElseThrow(
+        return getByDate(restaurantId, date, userId).orElseThrow(
                 () -> new DataConflictException("Menu for the date " + date + " for the restaurant" + restaurantId
                         + " is not exist or doesn't belong to User id=" + userId));
     }

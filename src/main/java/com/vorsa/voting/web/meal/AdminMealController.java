@@ -35,7 +35,7 @@ public class AdminMealController {
                     @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get meal with id= {} by user with id= {}", mealId, userId);
-        return repository.getExistedOrBelonged(authUser.id(), mealId);
+        return repository.getExistedOrBelonged(mealId, userId);
     }
 
     @PostMapping(value = "/{restaurantId}/menus/{menuId}/meals", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -46,7 +46,7 @@ public class AdminMealController {
         log.info("add {} for thr restaurant with id= {} for the menu with id= {} by user with id ={}",
                 meal, restaurantId, menuId, userId);
         checkNew(meal);
-        Meal created = service.save(meal, menuId, authUser.id());
+        Meal created = service.save(userId, menuId, meal);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
@@ -60,8 +60,8 @@ public class AdminMealController {
         int userId = authUser.id();
         log.info("update {} by user with id= {}", meal, userId);
         assureIdConsistent(meal, mealId);
-        repository.getExistedOrBelonged(userId, mealId);
-        service.save(meal, menuId, userId);
+        repository.getExistedOrBelonged(mealId, userId);
+        service.save(userId, menuId, meal);
     }
 
     @DeleteMapping("/{restaurantId}/menus/{menuId}/meals/{mealId}")
@@ -71,7 +71,7 @@ public class AdminMealController {
                        @PathVariable int menuId, @PathVariable int mealId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("delete meal with id= {} by user with id= {}", mealId, userId);
-        Meal meal = repository.getExistedOrBelonged(userId, mealId);
+        Meal meal = repository.getExistedOrBelonged(mealId, userId);
         repository.delete(meal);
     }
 }

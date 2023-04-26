@@ -15,7 +15,7 @@ public class VoteService {
     private final RestaurantRepository restaurantRepository;
 
     @Transactional
-    public Vote save(int restaurantId, User user) {
+    public Vote save(User user, int restaurantId) {
         Vote vote = new Vote();
         vote.setUser(user);
         vote.setRestaurant(restaurantRepository.getExisted(restaurantId));

@@ -27,9 +27,8 @@ public class VoteController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<VoteTo> createWithLocation(@RequestParam int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
-        int userId = authUser.id();
-        log.info("create vote for restaurant id= {} by user {}", restaurantId, userId);
-        VoteTo created = VoteUtil.createTo(service.save(restaurantId, authUser.getUser()));
+        log.info("create vote for restaurant id= {} by user {}", restaurantId, authUser.id());
+        VoteTo created = VoteUtil.createTo(service.save(authUser.getUser(), restaurantId));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.id()).toUri();
