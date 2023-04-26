@@ -15,8 +15,8 @@ import java.util.List;
 @Table(name = "menu",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "menu_unique_menu_date_idx",
-                        columnNames = {"menu_date"}),
+                        name = "menu_unique_menu_date_restaurant_id_idx",
+                        columnNames = {"menu_date", "restaurant_id"}),
         })
 @Getter
 @Setter
