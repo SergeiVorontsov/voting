@@ -32,15 +32,14 @@ public class AdminMenuController {
 
     static final String REST_URL = "/api/admin/restaurants";
 
-    private MenuRepository repository;
-    private MenuService service;
-    private UniqueDateValidator dateValidator;
+    private final MenuRepository repository;
+    private final MenuService service;
+    private final UniqueDateValidator dateValidator;
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
         binder.addValidators(dateValidator);
     }
-
 
     @GetMapping(value = "/{restaurantId}/menus/{menuId}")
     public Menu get(@PathVariable int restaurantId, @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {

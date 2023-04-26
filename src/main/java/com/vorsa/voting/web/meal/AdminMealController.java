@@ -30,9 +30,9 @@ import static com.vorsa.voting.util.validation.ValidationUtil.checkNew;
 public class AdminMealController {
     static final String REST_URL = "/api/admin/restaurants";
 
-    private MealRepository repository;
-    private MealService service;
-    private UniqueNameValidator nameValidator;
+    private final MealRepository repository;
+    private final MealService service;
+    private final UniqueNameValidator nameValidator;
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {

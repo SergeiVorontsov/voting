@@ -30,7 +30,11 @@ public class Vote extends BaseEntity {
     @NotNull
     private Restaurant restaurant;
 
-    @Column(name = "VOTING_DATE", nullable = false, columnDefinition = "date default current_date()", updatable = false)
+    @Column(name = "voting_date",
+            nullable = false,
+            updatable = false,
+            insertable = false,
+            columnDefinition = "date default current_date()")
     @NotNull
     private LocalDate date = LocalDate.now();
 }
