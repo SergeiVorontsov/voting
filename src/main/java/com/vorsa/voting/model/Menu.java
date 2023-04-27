@@ -7,9 +7,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static com.vorsa.voting.util.DateUtil.DATE_PATTERN;
 
 @Entity
 @Table(name = "menu",
@@ -32,10 +35,9 @@ public class Menu extends BaseEntity {
     @JsonIgnore
     private Restaurant restaurant;
 
-    //add to "columnDefinition" "...check (menu_date > current_date()" to constrain menu creation retroactively
     @Column(name = "menu_date", nullable = false, columnDefinition = "date default current_date()", updatable = false)
     @NotNull
-    //@Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    @DateTimeFormat(pattern = DATE_PATTERN)
     private LocalDate date = LocalDate.now();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "menu")

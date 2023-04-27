@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class RestaurantUtil {
+
     public static List<RestaurantTo> getTos(Collection<Restaurant> restaurants) {
         return restaurants.stream()
                 .map(RestaurantUtil::createTo)

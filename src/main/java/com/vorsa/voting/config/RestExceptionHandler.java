@@ -12,6 +12,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.firewall.RequestRejectedException;
@@ -24,15 +25,18 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.io.FileNotFoundException;
 import java.nio.file.AccessDeniedException;
+import java.time.format.DateTimeParseException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.vorsa.voting.error.ErrorType.*;
+import static com.vorsa.voting.util.DateUtil.DATE_PATTERN;
 
 @RestControllerAdvice
 @AllArgsConstructor
@@ -50,6 +54,8 @@ public class RestExceptionHandler {
             put(NotFoundException.class, NOT_FOUND);
             put(DataConflictException.class, DATA_CONFLICT);
             put(IllegalRequestDataException.class, BAD_REQUEST);
+            put(MethodArgumentTypeMismatchException.class, BAD_REQUEST);
+            put(HttpMessageNotReadableException.class, BAD_REQUEST);
             put(AppException.class, APP_ERROR);
             put(EntityNotFoundException.class, DATA_CONFLICT);
             put(DataIntegrityViolationException.class, DATA_CONFLICT);

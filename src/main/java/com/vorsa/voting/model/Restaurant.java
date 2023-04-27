@@ -26,6 +26,7 @@ public class Restaurant extends NamedEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @OrderBy("date DESC")
     @ToString.Exclude
     @Schema(hidden = true)
     private List<Menu> menu;
