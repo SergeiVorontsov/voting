@@ -5,7 +5,6 @@ import com.vorsa.voting.model.User;
 import com.vorsa.voting.model.Vote;
 import com.vorsa.voting.repository.RestaurantRepository;
 import com.vorsa.voting.repository.VoteRepository;
-import com.vorsa.voting.web.AuthUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +21,16 @@ public class VoteService {
     @Transactional
     public Vote save(User user, int restaurantId) {
         Vote vote = new Vote();
-        voteRepository.getExistedByDate(AuthUser.authUser().id()).ifPresent(dbVote -> {
-            if (LocalTime.now().isBefore(REVOTE_DEADLINE)) return;
+        voteRepository.getExistedByDate(user.id()).ifPresent(dbVote -> {
+            if (LocalTime.now().isBefore(REVOTE_DEADLINE)){
+                vote.setId(dbVote.getId());
+                return;}
             throw new DataConflictException("You have already vote today");
         });
+        restaurantRepository.getWithMenu(restaurantId).ifPresentOrElse(vote::setRestaurant,()->{
+            throw new DataConflictException("Now you can't vote for the restaurant with id="+ restaurantId +", as it doesn't have a today menu yet. Try agan later");
+        });
         vote.setUser(user);
-        vote.setRestaurant(restaurantRepository.getExisted(restaurantId));
         return voteRepository.save(vote);
     }
 }
