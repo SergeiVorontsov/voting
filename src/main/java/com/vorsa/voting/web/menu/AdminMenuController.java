@@ -4,6 +4,7 @@ import com.vorsa.voting.model.Menu;
 import com.vorsa.voting.repository.MenuRepository;
 import com.vorsa.voting.service.MenuService;
 import com.vorsa.voting.web.AuthUser;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ import static com.vorsa.voting.util.validation.ValidationUtil.checkNew;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@Tag(name = "Menu", description = "Admin menu management APIs")
+@Tag(name = "Menu", description = "Admin menu management APIs. Admin can manage only menus of restaurants that he created")
 @RequestMapping(value = AdminMenuController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminMenuController {
 
@@ -42,6 +43,7 @@ public class AdminMenuController {
     }
 
     @GetMapping(value = "/{restaurantId}/menus/{menuId}")
+    @Operation(summary = "Get restaurants menu by id")
     public Menu get(@PathVariable int restaurantId, @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get menu with id= {} by user with id= {}", menuId, userId);
@@ -49,6 +51,7 @@ public class AdminMenuController {
     }
 
     @GetMapping("/{restaurantId}/menus/by-date")
+    @Operation(summary = "Get restaurants menu by its date for")
     public Menu getByDate(@PathVariable int restaurantId, @RequestParam LocalDate date, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get menu of restaurant  with id= {} for the date= {} by user with id= {}", restaurantId, date, userId);
@@ -56,6 +59,7 @@ public class AdminMenuController {
     }
 
     @GetMapping(value = "/{restaurantId}/menus")
+    @Operation(summary = "Get all menus of restaurant")
     public List<Menu> getAll(@PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get all menus of the restaurant with id= {} by user with id= {}", restaurantId, userId);
@@ -64,6 +68,7 @@ public class AdminMenuController {
 
     @PostMapping(value = "/{restaurantId}/menus", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
+    @Operation(summary = "Create new restaurants menu for specified date")
     public ResponseEntity<Menu> createWithLocation(@Valid @RequestBody Menu menu, @PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("create {} for restaurant id= {} by user with id= {}", menu, restaurantId, userId);
@@ -77,6 +82,7 @@ public class AdminMenuController {
 
     @DeleteMapping("/{restaurantId}/menus/{menuId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete restaurant menu by id")
     @Transactional
     public void delete(@PathVariable int restaurantId, @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();

@@ -4,6 +4,7 @@ import com.vorsa.voting.model.Restaurant;
 import com.vorsa.voting.repository.RestaurantRepository;
 import com.vorsa.voting.service.RestaurantService;
 import com.vorsa.voting.web.AuthUser;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ import static com.vorsa.voting.util.validation.ValidationUtil.checkNew;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@Tag(name = "Restaurant ", description = "Admin restaurant management APIs")
+@Tag(name = "Restaurant ", description = "Admin restaurant management APIs. Admin can manage only restaurants, that he created")
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 
 public class AdminRestaurantController {
@@ -35,6 +36,7 @@ public class AdminRestaurantController {
     private final RestaurantService service;
 
     @GetMapping
+    @Operation(summary = "Get all restaurants belong to admin")
     public List<Restaurant> getAll(@AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get all restaurants belong to user with id= {} ", userId);
@@ -43,6 +45,7 @@ public class AdminRestaurantController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
+    @Operation(summary = "Create new restaurant")
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("create {} for user {}", restaurant, userId);
@@ -56,6 +59,7 @@ public class AdminRestaurantController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Update restaurant by id")
     @Transactional
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
@@ -68,6 +72,7 @@ public class AdminRestaurantController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
+    @Operation(summary = "Delete restaurant by id")
     public void delete(@PathVariable int id, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("delete {} for user {}", id, userId);

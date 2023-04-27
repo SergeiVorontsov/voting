@@ -4,6 +4,7 @@ import com.vorsa.voting.model.User;
 import com.vorsa.voting.to.UserTo;
 import com.vorsa.voting.util.UsersUtil;
 import com.vorsa.voting.web.AuthUser;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class ProfileController extends AbstractUserController {
     static final String REST_URL = "/api/profile";
 
     @GetMapping
+    @Operation(summary = "Get own profile")
     public User get(@AuthenticationPrincipal AuthUser authUser) {
         log.info("get {}", authUser);
         return authUser.getUser();
@@ -36,12 +38,14 @@ public class ProfileController extends AbstractUserController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete own profile")
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
         super.delete(authUser.id());
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Register new profile")
     public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
         log.info("register {}", userTo);
         checkNew(userTo);
@@ -53,6 +57,7 @@ public class ProfileController extends AbstractUserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Update own profile")
     @Transactional
     public void update(@RequestBody @Valid UserTo userTo, @AuthenticationPrincipal AuthUser authUser) {
         log.info("update {} with id={}", userTo, authUser.id());

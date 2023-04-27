@@ -1,6 +1,7 @@
 package com.vorsa.voting.web.user;
 
 import com.vorsa.voting.model.User;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class AdminUserController extends AbstractUserController {
 
     @Override
     @GetMapping("/{id}")
+    @Operation(summary = "Get user by id")
     public User get(@PathVariable int id) {
         return super.get(id);
     }
@@ -36,17 +38,20 @@ public class AdminUserController extends AbstractUserController {
     @Override
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete user by id")
     public void delete(@PathVariable int id) {
         super.delete(id);
     }
 
     @GetMapping
+    @Operation(summary = "Get all users")
     public List<User> getAll() {
         log.info("getAll");
         return repository.findAll(Sort.by(Sort.Direction.ASC, "name", "email"));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create new user")
     public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user) {
         log.info("create {}", user);
         checkNew(user);
@@ -59,6 +64,7 @@ public class AdminUserController extends AbstractUserController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Update user by id")
     public void update(@Valid @RequestBody User user, @PathVariable int id) {
         log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
@@ -66,6 +72,7 @@ public class AdminUserController extends AbstractUserController {
     }
 
     @GetMapping("/by-email")
+    @Operation(summary = "Get user by email")
     public User getByEmail(@RequestParam String email) {
         log.info("getByEmail {}", email);
         return repository.getExistedByEmail(email);
@@ -74,6 +81,7 @@ public class AdminUserController extends AbstractUserController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
+    @Operation(summary = "Enable user")
     public void enable(@PathVariable int id, @RequestParam boolean enabled) {
         log.info(enabled ? "enable {}" : "disable {}", id);
         User user = repository.getExisted(id);

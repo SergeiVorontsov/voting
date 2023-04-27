@@ -23,8 +23,19 @@ import org.springframework.context.annotation.Configuration;
                 title = "REST API documentation",
                 version = "1.0",
                 description = """
-                        Restaurants voting application
-                        <p></b>Test credentials:</b><br>
+                        <h3>Restaurants voting application</h3>
+                        <p>This is a voting system for deciding where to have lunch.<br>
+                        2 types of users: admin and regular users.<br>
+                        Admin can input a restaurant and it's lunch menu of the day (just a dish name and price).<br>
+                        Admin can create new menus, new meals, update meals.<br>
+                        Users can vote for a restaurant they want to have lunch at today.<br>
+                        Only one vote counted per user.<br>
+                        If user votes again the same day:<br>
+                           - if it is before 11:00 we assume that he changed his mind.<br>
+                           - if it is after 11:00 then it is too late, vote can't be changed.<br>
+                        Supposed each restaurant provides a new menu each day. So restaurants that have not been
+                        provided a today lunch menu, don't take part in the voting today</p>
+                        <p><b>Test credentials:</b><br>
                          - user@yandex.ru / password<br>
                          - admin@gmail.com / admin<br>
                          - guest@gmail.com / guest</p>

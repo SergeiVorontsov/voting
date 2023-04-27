@@ -4,6 +4,7 @@ import com.vorsa.voting.model.Meal;
 import com.vorsa.voting.repository.MealRepository;
 import com.vorsa.voting.service.MealService;
 import com.vorsa.voting.web.AuthUser;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ import static com.vorsa.voting.util.validation.ValidationUtil.checkNew;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@Tag(name = "Meal", description = "Admin meal management APIs")
+@Tag(name = "Meal", description = "Admin meal management APIs. Admin can managed only meals of menus of restaurants that he created ")
 @RequestMapping(value = AdminMealController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminMealController {
     static final String REST_URL = "/api/admin/restaurants";
@@ -40,6 +41,7 @@ public class AdminMealController {
     }
 
     @GetMapping(value = "/{restaurantId}/menus/{menuId}/meals/{mealId}")
+    @Operation(summary = "Get restaurant menu meal by id")
     public Meal get(@PathVariable int restaurantId, @PathVariable int menuId, @PathVariable int mealId,
                     @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
@@ -49,6 +51,7 @@ public class AdminMealController {
 
     @PostMapping(value = "/{restaurantId}/menus/{menuId}/meals", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create new meal for specified restaurant menu")
     public ResponseEntity<Meal> createWithLocation(@Valid @RequestBody Meal meal, @PathVariable int restaurantId,
                                                    @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
@@ -63,6 +66,7 @@ public class AdminMealController {
 
     @PutMapping(value = "/{restaurantId}/menus/{menuId}/meals/{mealId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Update meal by Id")
     @Transactional
     public void update(@Valid @RequestBody Meal meal, @PathVariable int restaurantId,
                        @PathVariable int menuId, @PathVariable int mealId, @AuthenticationPrincipal AuthUser authUser) {
@@ -75,6 +79,7 @@ public class AdminMealController {
 
     @DeleteMapping("/{restaurantId}/menus/{menuId}/meals/{mealId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete meal by id")
     @Transactional
     public void delete(@PathVariable int restaurantId,
                        @PathVariable int menuId, @PathVariable int mealId, @AuthenticationPrincipal AuthUser authUser) {
