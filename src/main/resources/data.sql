@@ -8,9 +8,8 @@ VALUES ('USER', 1),
        ('ADMIN', 2),
        ('USER', 2);
 
-
 INSERT INTO RESTAURANT (NAME, USER_ID)
-VALUES ('Domino"s Pizza', 1),
+VALUES ('Domino Pizza', 1),
        ('Pizza Hut', 2);
 
 INSERT INTO MENU (MENU_DATE, RESTAURANT_ID)

@@ -1,7 +1,6 @@
 package com.vorsa.voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -18,8 +17,9 @@ import java.util.List;
 @ToString(callSuper = true)
 public class Restaurant extends NamedEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ToString.Exclude
     @JsonIgnore
     private User user;
@@ -28,6 +28,20 @@ public class Restaurant extends NamedEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @OrderBy("date DESC")
     @ToString.Exclude
-    @Schema(hidden = true)
-    private List<Menu> menu;
+    @JsonIgnore
+    private List<Menu> menus;
+
+    public Restaurant(Restaurant r) {
+        this(r.id, r.name, r.user, r.menus);
+    }
+
+    public Restaurant(Integer id, String name, User user, List<Menu> menus) {
+        super(id, name);
+        this.user = user;
+        this.menus = menus;
+    }
+
+    public Restaurant(Integer id, String name, User user, Menu... menus) {
+        this(id, name, user, List.of(menus));
+    }
 }

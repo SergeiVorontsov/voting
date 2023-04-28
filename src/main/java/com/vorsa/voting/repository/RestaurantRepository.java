@@ -11,10 +11,10 @@ import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface RestaurantRepository extends BaseRepository<Restaurant> {
-    @Query("SELECT r FROM Restaurant r LEFT JOIN FETCH r.menu m WHERE r.id=:id  AND m.date =current_date")
+    @Query("SELECT r FROM Restaurant r LEFT JOIN FETCH r.menus m WHERE r.id=:id  AND m.date =current_date")
     Optional<Restaurant> getWithMenu(int id);
 
-    @Query("SELECT r FROM Restaurant r  LEFT JOIN FETCH r.menu m WHERE m.date = current_date")
+    @Query("SELECT r FROM Restaurant r  LEFT JOIN FETCH r.menus m WHERE m.date = current_date")
     List<Restaurant> getAllWithMenu();
 
     @Query("SELECT r FROM Restaurant r WHERE r.user.id=:userId")

@@ -46,7 +46,7 @@ public class AppConfig {
         objectMapper.registerModule(new Hibernate6Module());
         // ErrorHandling: https://stackoverflow.com/questions/7421474/548473
         objectMapper.addMixIn(ProblemDetail.class, MixIn.class);
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        //objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         JsonUtil.setMapper(objectMapper);
     }
 }

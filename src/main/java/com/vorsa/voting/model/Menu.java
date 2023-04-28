@@ -42,6 +42,12 @@ public class Menu extends BaseEntity {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "menu")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    @JsonIgnore
     private List<Meal> meals;
+
+    public Menu(Integer id, Restaurant restaurant, LocalDate date) {
+        super(id);
+        this.restaurant = restaurant;
+        this.date = date;
+    }
 }

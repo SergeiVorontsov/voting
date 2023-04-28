@@ -3,6 +3,7 @@ package com.vorsa.voting.web.menu;
 import com.vorsa.voting.model.Menu;
 import com.vorsa.voting.repository.MenuRepository;
 import com.vorsa.voting.service.MenuService;
+import com.vorsa.voting.to.MenuTo;
 import com.vorsa.voting.web.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +23,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.vorsa.voting.util.MenuUtil.createTo;
 import static com.vorsa.voting.util.validation.ValidationUtil.checkNew;
 
 @Slf4j
@@ -44,18 +46,18 @@ public class AdminMenuController {
 
     @GetMapping(value = "/{restaurantId}/menus/{menuId}")
     @Operation(summary = "Get restaurants menu by id")
-    public Menu get(@PathVariable int restaurantId, @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
+    public MenuTo get(@PathVariable int restaurantId, @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get menu with id= {} by user with id= {}", menuId, userId);
-        return repository.getExistedOrBelonged(userId, menuId);
+        return createTo(repository.getExistedOrBelonged(userId, menuId));
     }
 
     @GetMapping("/{restaurantId}/menus/by-date")
     @Operation(summary = "Get restaurants menu by its date for")
-    public Menu getByDate(@PathVariable int restaurantId, @RequestParam LocalDate date, @AuthenticationPrincipal AuthUser authUser) {
+    public MenuTo getByDate(@PathVariable int restaurantId, @RequestParam LocalDate date, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get menu of restaurant  with id= {} for the date= {} by user with id= {}", restaurantId, date, userId);
-        return repository.getExistedOrBelongedByDate(userId, restaurantId, date);
+        return createTo(repository.getExistedOrBelongedByDate(userId, restaurantId, date));
     }
 
     @GetMapping(value = "/{restaurantId}/menus")
