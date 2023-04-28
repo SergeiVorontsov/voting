@@ -1,15 +1,15 @@
 package com.vorsa.voting.web.menu;
 
 import com.vorsa.voting.model.Menu;
-import com.vorsa.voting.model.Restaurant;
-import com.vorsa.voting.to.MenuTo;
+import com.vorsa.voting.repository.MenuRepository;
 import com.vorsa.voting.util.JsonUtil;
-import com.vorsa.voting.util.MenuUtil;
 import com.vorsa.voting.web.AbstractControllerTest;
-import com.vorsa.voting.web.user.UniqueMailValidator;
+import com.vorsa.voting.web.user.UserTestData;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,77 +19,100 @@ import java.time.LocalDate;
 import static com.vorsa.voting.util.MenuUtil.createTo;
 import static com.vorsa.voting.web.menu.AdminMenuController.REST_URL;
 import static com.vorsa.voting.web.menu.MenuTestData.*;
-import static com.vorsa.voting.web.restaurant.RestaurantTestData.*;
+import static com.vorsa.voting.web.restaurant.RestaurantTestData.ADMIN_RESTAURANT1_ID;
+import static com.vorsa.voting.web.restaurant.RestaurantTestData.adminRestaurant1;
 import static com.vorsa.voting.web.user.UserTestData.ADMIN_MAIL;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AdminMenuControllerTest extends AbstractControllerTest {
     private static final String REST_URL_SLASH = REST_URL + '/';
+    private static final String REST_URL_MENU = REST_URL_SLASH + ADMIN_RESTAURANT1_ID + '/' + "menus";
+    private static final String REST_URL_MENU_SLASH = REST_URL_MENU + '/';
+
+    @Autowired
+    private MenuRepository menuRepository;
+
+    @Test
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_MENU))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + ADMIN_RESTAURANT1_ID +'/'+ "menus" + '/' + ADMIN_RESTAURANT1_MENU1_ID))
+        perform(MockMvcRequestBuilders.get(REST_URL_MENU_SLASH + ADMIN_RESTAURANT1_MENU1_ID))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MENU_TO_MATCHER.contentJson(createTo(adminMenuForRestaurant1)));
+                .andExpect(MENU_TO_MATCHER.contentJson(createTo(adminMenu1ForRestaurant1)));
     }
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void getByDate() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + ADMIN_RESTAURANT1_ID +'/'+ "menus" + '/' + ADMIN_RESTAURANT1_MENU1_ID))
+        perform(MockMvcRequestBuilders.get(REST_URL_MENU_SLASH + "by-date?date=" + adminMenu1ForRestaurant1.getDate()))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MENU_TO_MATCHER.contentJson(createTo(adminMenuForRestaurant1)));
+                .andExpect(MENU_TO_MATCHER.contentJson(createTo(adminMenu1ForRestaurant1)));
     }
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
-    void getAll() {
-    }
-
-    @Test
-    @WithUserDetails(value = ADMIN_MAIL)
-    void createWithLocation() {
-    }
-
-    @Test
-    @WithUserDetails(value = ADMIN_MAIL)
-    void delete() {
-    }
-
-    @Test
-    @Transactional(propagation = Propagation.NEVER)
-    @WithUserDetails(value = ADMIN_MAIL)
-    void updateDuplicate() throws Exception {
-        Restaurant updated = new Restaurant(adminRestaurant1);
-        updated.setName(userRestaurant1.getName());
-        perform(MockMvcRequestBuilders.put(REST_URL_SLASH + ADMIN_RESTAURANT1_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated)))
+    void getAll() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_MENU))
+                .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string(containsString(UniqueMailValidator.EXCEPTION_DUPLICATE_EMAIL)));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MENU_MATCHER.contentJson(adminMenu1ForRestaurant1, adminMenu2ForRestaurant1));
     }
-/*
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void createWithLocation() throws Exception {
+        Menu newMenu = MenuTestData.getNew();
+        ResultActions action = perform(MockMvcRequestBuilders.post(AdminMenuControllerTest.REST_URL_MENU)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newMenu)));
+
+        Menu created = MENU_MATCHER.readFromJson(action);
+        int newId = created.id();
+        newMenu.setId(newId);
+        MENU_MATCHER.assertMatch(created, newMenu);
+        MENU_MATCHER.assertMatch(menuRepository.getExisted(newId), newMenu);
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void delete() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL_MENU_SLASH + ADMIN_RESTAURANT1_MENU1_ID))
+                .andExpect(status().isNoContent());
+        assertFalse(menuRepository.get(MenuTestData.ADMIN_RESTAURANT1_MENU1_ID, UserTestData.ADMIN_ID).isPresent());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void deleteDataConflict() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL_MENU_SLASH + ANOTHER_ADMIN_RESTAURANT_MENU_ID))
+                .andExpect(status().isConflict());
+    }
 
     @Test
     @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = ADMIN_MAIL)
     void createDuplicate() throws Exception {
-        User expected = new User(null, "New", USER_MAIL, "newPass", Role.USER, Role.ADMIN);
-        perform(MockMvcRequestBuilders.post(AdminUserController.REST_URL)
+        Menu expected = new Menu(null, adminRestaurant1, LocalDate.now());
+        perform(MockMvcRequestBuilders.post(REST_URL_MENU)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(expected, "newPass")))
+                .content(JsonUtil.writeValue(expected)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string(containsString(UniqueMailValidator.EXCEPTION_DUPLICATE_EMAIL)));
+                .andExpect(content().string(containsString(UniqueDateValidator.EXCEPTION_DUPLICATE_DATE)));
     }
-*/
 }

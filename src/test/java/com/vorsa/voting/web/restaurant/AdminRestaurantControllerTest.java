@@ -2,13 +2,9 @@ package com.vorsa.voting.web.restaurant;
 
 import com.vorsa.voting.model.Menu;
 import com.vorsa.voting.model.Restaurant;
-import com.vorsa.voting.model.Role;
-import com.vorsa.voting.model.User;
 import com.vorsa.voting.repository.RestaurantRepository;
 import com.vorsa.voting.util.JsonUtil;
 import com.vorsa.voting.web.AbstractControllerTest;
-import com.vorsa.voting.web.user.AdminUserController;
-import com.vorsa.voting.web.user.UniqueMailValidator;
 import com.vorsa.voting.web.user.UserTestData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
-import static com.vorsa.voting.util.RestaurantUtil.getTos;
 import static com.vorsa.voting.web.restaurant.AdminRestaurantController.REST_URL;
 import static com.vorsa.voting.web.restaurant.RestaurantTestData.*;
 import static com.vorsa.voting.web.user.UserTestData.*;
-import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -35,29 +26,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AdminRestaurantControllerTest extends AbstractControllerTest {
     private static final String REST_URL_SLASH = REST_URL + '/';
 
-     @Autowired
-     private RestaurantRepository restaurantRepository;
+    @Autowired
+    private RestaurantRepository restaurantRepository;
 
-     @Test
-     void getUnauth() throws Exception {
-         perform(MockMvcRequestBuilders.get(REST_URL_SLASH + ADMIN_RESTAURANT1_ID))
-                 .andExpect(status().isUnauthorized());
-     }
+    @Test
+    void getUnauth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + ADMIN_RESTAURANT1_ID))
+                .andExpect(status().isUnauthorized());
+    }
 
-     @Test
-     @WithUserDetails(value = ADMIN_MAIL)
-     void delete() throws Exception {
-         perform(MockMvcRequestBuilders.delete(REST_URL_SLASH + ADMIN_RESTAURANT1_ID))
-                 .andExpect(status().isNoContent());
-         assertFalse(restaurantRepository.get(UserTestData.ADMIN_ID, ADMIN_RESTAURANT1_ID).isPresent());
-     }
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void delete() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL_SLASH + ADMIN_RESTAURANT1_ID))
+                .andExpect(status().isNoContent());
+        assertFalse(restaurantRepository.get(UserTestData.ADMIN_ID, ADMIN_RESTAURANT1_ID).isPresent());
+    }
 
-     @Test
-     @WithUserDetails(value = ADMIN_MAIL)
-     void deleteDataConflict() throws Exception {
-         perform(MockMvcRequestBuilders.delete(REST_URL_SLASH + USER_RESTAURANT1_ID))
-                 .andExpect(status().isConflict());
-     }
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void deleteDataConflict() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL_SLASH + ANOTHER_ADMIN_RESTAURANT_ID))
+                .andExpect(status().isConflict());
+    }
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
@@ -77,7 +68,7 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void update() throws Exception {
-       Restaurant updated = RestaurantTestData.getUpdated();
+        Restaurant updated = RestaurantTestData.getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL_SLASH + ADMIN_RESTAURANT1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
@@ -99,13 +90,13 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_MATCHER.contentJson(List.of(adminRestaurant1)));
+                .andExpect(RESTAURANT_MATCHER.contentJson(adminRestaurant1, adminRestaurant2));
     }
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void createInvalid() throws Exception {
-       Restaurant invalid = new Restaurant(null, "",admin, new Menu(null, adminRestaurant1, LocalDate.now()));
+        Restaurant invalid = new Restaurant(null, "", admin, new Menu(null, adminRestaurant1, LocalDate.now()));
         perform(MockMvcRequestBuilders.post(AdminRestaurantController.REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(invalid)))

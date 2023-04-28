@@ -75,7 +75,7 @@ public class AdminMenuController {
         int userId = authUser.id();
         log.info("create {} for restaurant id= {} by user with id= {}", menu, restaurantId, userId);
         checkNew(menu);
-        Menu created = service.save(restaurantId, userId, menu);
+        Menu created = service.save(userId, restaurantId, menu);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.id()).toUri();

@@ -5,62 +5,42 @@ import com.vorsa.voting.to.RestaurantTo;
 import com.vorsa.voting.web.MatcherFactory;
 import com.vorsa.voting.web.menu.MenuTestData;
 
-import java.util.List;
+import java.util.Collections;
 
-import static com.vorsa.voting.util.RestaurantUtil.getTos;
-import static com.vorsa.voting.web.menu.MenuTestData.adminMenuForRestaurant1;
-
-import static com.vorsa.voting.web.menu.MenuTestData.userMenuForRestaurant1;
-import static com.vorsa.voting.web.user.UserTestData.admin;
-import static com.vorsa.voting.web.user.UserTestData.user;
-import static java.time.LocalDateTime.of;
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.vorsa.voting.web.menu.MenuTestData.*;
+import static com.vorsa.voting.web.user.UserTestData.*;
 
 public class RestaurantTestData {
     public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "user", "menus");
-    public static final MatcherFactory.Matcher<RestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingEqualsComparator(RestaurantTo.class);
+    public static MatcherFactory.Matcher<RestaurantTo> RESTAURANT_TO_WITH_MENU_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(RestaurantTo.class, "menus.meals");
 
-    /*public static MatcherFactory.Matcher<Restaurant> RESTAURANT_WITH_MENU_MATCHER =
-            MatcherFactory.usingAssertions(Restaurant.class,
-                    //     No need use ignoringAllOverriddenEquals, see https://assertj.github.io/doc/#breaking-changes
-                    (a, e) -> assertThat(a).usingRecursiveComparison()
-                            .ignoringFields("user", "menu.restaurant", "menu.meals").isEqualTo(e),
-                    (a, e) -> {
-                        throw new UnsupportedOperationException();
-                    });*/
-    public static MatcherFactory.Matcher<RestaurantTo> RESTAURANT_TO_WITH_MENU_MATCHER =
-            MatcherFactory.usingAssertions(RestaurantTo.class,
-                    //     No need use ignoringAllOverriddenEquals, see https://assertj.github.io/doc/#breaking-changes
-                    (a, e) -> assertThat(a).usingRecursiveComparison()
-                            .ignoringFields( "menu.meals").isEqualTo(e),
-                    (a, e) -> {
-                        throw new UnsupportedOperationException();
-                    });
-
-
-    //public static MatcherFactory.Matcher<MealTo> MEAL_TO_MATCHER = MatcherFactory.usingEqualsComparator(MealTo.class);
-
-    public static final int USER_RESTAURANT1_ID = 1;
-    public static final int ADMIN_RESTAURANT1_ID = 2;
+    public static final int ADMIN_RESTAURANT1_ID = 1;
+    public static final int ADMIN_RESTAURANT2_ID = 2;
+    public static final int ANOTHER_ADMIN_RESTAURANT_ID = 3;
     public static final int NOT_FOUND_RESTAURANT_ID = 0;
 
-    public static final Restaurant userRestaurant1 = new Restaurant(USER_RESTAURANT1_ID,"Domino Pizza",user, userMenuForRestaurant1);
-    public static final Restaurant adminRestaurant1 = new Restaurant(ADMIN_RESTAURANT1_ID,"Pizza Hut",admin, adminMenuForRestaurant1);
+    public static final Restaurant adminRestaurant1 = new Restaurant(ADMIN_RESTAURANT1_ID, "Domino Pizza", null, Collections.emptyList());
+    public static final Restaurant adminRestaurant2 = new Restaurant(ADMIN_RESTAURANT2_ID, "Pizza Hut", null, Collections.emptyList());
+    public static final Restaurant anotherAdminRestaurant = new Restaurant(ANOTHER_ADMIN_RESTAURANT_ID, "Alfa", null, Collections.emptyList());
 
-   /* static {
-        userRestaurant1.setMenus(List.of(userMenuForRestaurant1));
-        adminRestaurant1.setMenus(List.of(adminMenuForRestaurant1));
-    }*/
+    public static final Restaurant adminRestaurant1WithActualMenu = new Restaurant(ADMIN_RESTAURANT1_ID, "Domino Pizza", null, Collections.emptyList());
 
-    public static final List<RestaurantTo> tos = getTos(adminRestaurant1);
-
-    public static final List<Restaurant> restaurants = List.of(userRestaurant1,adminRestaurant1);
-    public static final List<Restaurant> restaurantsWithMenu = List.of(userRestaurant1);
+    static {
+        adminRestaurant1.setUser(admin);
+        adminRestaurant2.setUser(admin);
+        adminRestaurant1WithActualMenu.setUser(admin);
+        adminRestaurant1.setMenus(adminMenu1ForRestaurant1, adminMenu2ForRestaurant1);
+        adminRestaurant2.setMenus(adminMenu1ForRestaurant2);
+        anotherAdminRestaurant.setUser(anotherAdmin);
+        anotherAdminRestaurant.setMenus(anotherAdminMenu);
+        adminRestaurant1WithActualMenu.setMenus(adminMenu1ForRestaurant1);
+    }
 
     public static Restaurant getNew() {
-        return new Restaurant(null,"New restaurant", user, MenuTestData.getNew());
+        return new Restaurant(null, "New restaurant", user, MenuTestData.getNew());
     }
 
     public static Restaurant getUpdated() {
-        return new Restaurant(ADMIN_RESTAURANT1_ID, "New name", user, adminMenuForRestaurant1);}
+        return new Restaurant(ADMIN_RESTAURANT1_ID, "New name", user, adminMenu1ForRestaurant1);
+    }
 }

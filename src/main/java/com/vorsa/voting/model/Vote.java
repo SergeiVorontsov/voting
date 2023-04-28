@@ -1,5 +1,6 @@
 package com.vorsa.voting.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -26,12 +27,14 @@ public class Vote extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull
+    @JsonIgnore
     private User user;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull
+    @JsonIgnore
     private Restaurant restaurant;
 
     @Column(name = "voting_date",
@@ -41,4 +44,11 @@ public class Vote extends BaseEntity {
             columnDefinition = "date default current_date()")
     @NotNull
     private LocalDate date = LocalDate.now();
+
+    public Vote(Integer id, User user, Restaurant restaurant, LocalDate date) {
+        super(id);
+        this.user = user;
+        this.restaurant = restaurant;
+        this.date = date;
+    }
 }

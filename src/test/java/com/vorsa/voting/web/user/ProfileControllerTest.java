@@ -45,7 +45,7 @@ class ProfileControllerTest extends AbstractControllerTest {
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL))
                 .andExpect(status().isNoContent());
-        USER_MATCHER.assertMatch(userRepository.findAll(), admin, guest);
+        USER_MATCHER.assertMatch(userRepository.findAll(), admin, guest, anotherAdmin);
     }
 
     @Test
@@ -62,7 +62,7 @@ class ProfileControllerTest extends AbstractControllerTest {
         int newId = created.id();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);
-        USER_MATCHER.assertMatch(userRepository.getById(newId), newUser);
+        USER_MATCHER.assertMatch(userRepository.getExisted(newId), newUser);
     }
 
     @Test
@@ -74,7 +74,7 @@ class ProfileControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        USER_MATCHER.assertMatch(userRepository.getById(USER_ID), UsersUtil.updateFromTo(new User(user), updatedTo));
+        USER_MATCHER.assertMatch(userRepository.getExisted(USER_ID), UsersUtil.updateFromTo(new User(user), updatedTo));
     }
 
     @Test

@@ -1,8 +1,7 @@
 package com.vorsa.voting.web.vote;
 
+import com.vorsa.voting.model.Vote;
 import com.vorsa.voting.service.VoteService;
-import com.vorsa.voting.to.VoteTo;
-import com.vorsa.voting.util.VoteUtil;
 import com.vorsa.voting.web.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,9 +29,9 @@ public class VoteController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     @Operation(summary = "Make vote for the restaurant by restaurant id")
-    public ResponseEntity<VoteTo> createWithLocation(@RequestParam int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
+    public ResponseEntity<Vote> createWithLocation(@RequestParam int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         log.info("create vote for restaurant id= {} by user {}", restaurantId, authUser.id());
-        VoteTo created = VoteUtil.createTo(service.save(authUser.getUser(), restaurantId));
+        Vote created = service.save(authUser.getUser(), restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.id()).toUri();

@@ -1,16 +1,26 @@
 package com.vorsa.voting.to;
 
-import com.vorsa.voting.model.Menu;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+
+import java.util.List;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class RestaurantTo extends NamedTo {
-    Menu menu;
+    List<MenuTo> menus;
 
-    public RestaurantTo(Integer id, String name, Menu menu) {
+    public RestaurantTo(Integer id, String name, List<MenuTo> menus) {
         super(id, name);
-        this.menu = menu;
+        this.menus = menus;
+    }
+
+    @Override
+    public String toString() {
+        return "RestaurantTo{" +
+                "id=" + id +
+                " name=" + name +
+                " menus=" + menus +
+                '}';
     }
 }

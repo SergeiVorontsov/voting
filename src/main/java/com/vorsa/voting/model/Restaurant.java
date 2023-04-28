@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -43,5 +44,9 @@ public class Restaurant extends NamedEntity {
 
     public Restaurant(Integer id, String name, User user, Menu... menus) {
         this(id, name, user, List.of(menus));
+    }
+
+    public void setMenus(Menu... menus) {
+        this.menus = Arrays.stream(menus).toList();
     }
 }

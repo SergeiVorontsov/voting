@@ -1,7 +1,6 @@
 package com.vorsa.voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -49,5 +48,12 @@ public class Menu extends BaseEntity {
         super(id);
         this.restaurant = restaurant;
         this.date = date;
+    }
+
+    public Menu(Menu menu) {
+        super(menu.id);
+        this.restaurant = menu.restaurant;
+        this.date = menu.date;
+        this.meals = menu.meals;
     }
 }
