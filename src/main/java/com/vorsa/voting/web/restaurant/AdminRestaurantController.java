@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,7 @@ public class AdminRestaurantController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     @Operation(summary = "Create new restaurant")
+    @CacheEvict(value = "restaurants", allEntries = true)
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("create {} for user {}", restaurant, userId);
@@ -61,6 +63,7 @@ public class AdminRestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Update restaurant by id")
     @Transactional
+    @CacheEvict(value = "restaurants", allEntries = true)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("update {} for user {}", restaurant, userId);
@@ -73,6 +76,7 @@ public class AdminRestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     @Operation(summary = "Delete restaurant by id")
+    @CacheEvict(value = "restaurants", allEntries = true)
     public void delete(@PathVariable int id, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("delete {} for user {}", id, userId);

@@ -49,11 +49,4 @@ public class Menu extends BaseEntity {
         this.restaurant = restaurant;
         this.date = date;
     }
-
-    public Menu(Menu menu) {
-        super(menu.id);
-        this.restaurant = menu.restaurant;
-        this.date = menu.date;
-        this.meals = menu.meals;
-    }
 }

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,6 @@ import java.util.List;
 @AllArgsConstructor
 @Tag(name = "Restaurant", description = "Restaurant getting APIs")
 @RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-// TODO: cache
 public class RestaurantController {
     static final String REST_URL = "/api/restaurants";
 
@@ -42,6 +42,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/with-today-menu")
+    @Cacheable(cacheNames = "restaurants")
     @Operation(summary = "Get all restaurants with today menu")
     public List<RestaurantTo> getAllWithMenu() {
         log.info("get all restaurants with menu");
