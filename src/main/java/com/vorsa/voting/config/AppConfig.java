@@ -2,7 +2,6 @@ package com.vorsa.voting.config;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate6.Hibernate6Module;
 import com.vorsa.voting.util.JsonUtil;
@@ -16,6 +15,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.ProblemDetail;
 
 import java.sql.SQLException;
+import java.time.Clock;
 import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
@@ -46,7 +46,11 @@ public class AppConfig {
         objectMapper.registerModule(new Hibernate6Module());
         // ErrorHandling: https://stackoverflow.com/questions/7421474/548473
         objectMapper.addMixIn(ProblemDetail.class, MixIn.class);
-        //objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         JsonUtil.setMapper(objectMapper);
+    }
+
+    @Bean
+    Clock clock() {
+        return Clock.systemDefaultZone();
     }
 }

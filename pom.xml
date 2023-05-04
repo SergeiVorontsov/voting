@@ -51,9 +51,9 @@
             <version>${springdoc.version}</version>
         </dependency>
         <dependency>
-        <groupId>org.springdoc</groupId>
-        <artifactId>springdoc-openapi-security</artifactId>
-        <version>1.6.15</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-security</artifactId>
+            <version>1.6.15</version>
         </dependency>
         <!--cache-->
         <dependency>
