@@ -29,6 +29,6 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
     }
 
     default Restaurant getExistedWithMenu(int id) {
-        return getWithMenu(id).orElseThrow(() -> new NotFoundException("Restaurant with id=" + id + " not found"));
+        return getWithMenu(id).orElseThrow(() -> new NotFoundException("Restaurant with id=" + id + " hasn't today menu"));
     }
 }
