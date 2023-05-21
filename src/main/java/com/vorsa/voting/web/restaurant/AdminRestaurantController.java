@@ -36,6 +36,14 @@ public class AdminRestaurantController {
     private final RestaurantRepository repository;
     private final RestaurantService service;
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get restaurant belong to admin by id")
+    public Restaurant get(@PathVariable int id, @AuthenticationPrincipal AuthUser authUser) {
+        int userId = authUser.id();
+        log.info("get restaurant with id = {} belong to user with id= {} ", id, userId);
+        return repository.getExistedOrBelonged(userId, id);
+    }
+
     @GetMapping
     @Operation(summary = "Get all restaurants belong to admin")
     public List<Restaurant> getAll(@AuthenticationPrincipal AuthUser authUser) {

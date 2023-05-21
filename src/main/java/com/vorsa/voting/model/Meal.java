@@ -11,12 +11,11 @@ import org.hibernate.annotations.OnDeleteAction;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "meal_unique_id_menu_id_idx",
-                        columnNames = {"name", "menu_id"})
+                        columnNames = {"menu_id", "name"})
         })
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @ToString(callSuper = true)
 public class Meal extends NamedEntity {
 

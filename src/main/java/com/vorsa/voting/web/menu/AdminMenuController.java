@@ -44,7 +44,7 @@ public class AdminMenuController {
     protected void initBinder(WebDataBinder binder) {
         binder.addValidators(dateValidator);
     }
-
+///
     @GetMapping(value = "/{restaurantId}/menus/{menuId}")
     @Operation(summary = "Get restaurants menu by id")
     public MenuTo get(@PathVariable int restaurantId, @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
@@ -52,7 +52,7 @@ public class AdminMenuController {
         log.info("get menu with id= {} by user with id= {}", menuId, userId);
         return createTo(repository.getExistedOrBelonged(userId, menuId));
     }
-
+///
     @GetMapping("/{restaurantId}/menus/by-date")
     @Operation(summary = "Get restaurants menu by its date for")
     public MenuTo getByDate(@PathVariable int restaurantId, @RequestParam LocalDate date, @AuthenticationPrincipal AuthUser authUser) {
@@ -60,7 +60,7 @@ public class AdminMenuController {
         log.info("get menu of restaurant  with id= {} for the date= {} by user with id= {}", restaurantId, date, userId);
         return createTo(repository.getExistedOrBelongedByDate(userId, restaurantId, date));
     }
-
+///
     @GetMapping(value = "/{restaurantId}/menus")
     @Operation(summary = "Get all menus of restaurant")
     public List<Menu> getAll(@PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
@@ -68,7 +68,7 @@ public class AdminMenuController {
         log.info("get all menus of the restaurant with id= {} by user with id= {}", restaurantId, userId);
         return repository.getAllExistedOrBelonged(userId, restaurantId);
     }
-
+///
     @PostMapping(value = "/{restaurantId}/menus", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     @Operation(summary = "Create new restaurants menu for specified date")
@@ -83,7 +83,7 @@ public class AdminMenuController {
                 .buildAndExpand(created.id()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
-
+///
     @DeleteMapping("/{restaurantId}/menus/{menuId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete restaurant menu by id")

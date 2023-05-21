@@ -23,18 +23,20 @@ import java.time.LocalDate;
 
 public class Vote extends BaseEntity {
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull
     @JsonIgnore
+    @ToString.Exclude
     private User user;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull
     @JsonIgnore
+    @ToString.Exclude
     private Restaurant restaurant;
 
     @Column(name = "voting_date",

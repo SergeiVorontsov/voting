@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -46,7 +47,7 @@ public class RestaurantController {
     @Operation(summary = "Get all restaurants with today menu")
     public List<RestaurantTo> getAllWithMenu() {
         log.info("get all restaurants with menu");
-        return RestaurantUtil.getTos(repository.getAllWithMenu());
+        return RestaurantUtil.getTos(repository.getAllWithMenu(LocalDate.now()));
     }
 
     @GetMapping("/{id}/with-today-menu")
