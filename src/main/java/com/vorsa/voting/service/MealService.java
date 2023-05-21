@@ -14,8 +14,8 @@ public class MealService {
     private final MealRepository mealRepository;
 
     @Transactional
-    public Meal save(int userId,int menuId, Meal meal) {
-        meal.setMenu(menuRepository.getExistedOrBelonged(userId, menuId));
+    public Meal save(int menuId, Meal meal) {
+        meal.setMenu(menuRepository.getExisted(menuId));
         return mealRepository.save(meal);
     }
 }

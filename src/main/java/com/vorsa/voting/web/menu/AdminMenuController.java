@@ -2,6 +2,7 @@ package com.vorsa.voting.web.menu;
 
 import com.vorsa.voting.model.Menu;
 import com.vorsa.voting.repository.MenuRepository;
+import com.vorsa.voting.repository.RestaurantRepository;
 import com.vorsa.voting.service.MenuService;
 import com.vorsa.voting.to.MenuTo;
 import com.vorsa.voting.web.AuthUser;
@@ -36,7 +37,8 @@ public class AdminMenuController {
 
     static final String REST_URL = "/api/admin/restaurants";
 
-    private final MenuRepository repository;
+    private final RestaurantRepository restaurantRepository;
+    private final MenuRepository menuRepository;
     private final MenuService service;
     private final UniqueDateValidator dateValidator;
 
@@ -44,31 +46,33 @@ public class AdminMenuController {
     protected void initBinder(WebDataBinder binder) {
         binder.addValidators(dateValidator);
     }
-///
+
     @GetMapping(value = "/{restaurantId}/menus/{menuId}")
     @Operation(summary = "Get restaurants menu by id")
     public MenuTo get(@PathVariable int restaurantId, @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get menu with id= {} by user with id= {}", menuId, userId);
-        return createTo(repository.getExistedOrBelonged(userId, menuId));
+        restaurantRepository.getExistedOrBelonged(userId, restaurantId);
+        return createTo(menuRepository.getExisted(menuId));
     }
-///
+
     @GetMapping("/{restaurantId}/menus/by-date")
     @Operation(summary = "Get restaurants menu by its date for")
     public MenuTo getByDate(@PathVariable int restaurantId, @RequestParam LocalDate date, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get menu of restaurant  with id= {} for the date= {} by user with id= {}", restaurantId, date, userId);
-        return createTo(repository.getExistedOrBelongedByDate(userId, restaurantId, date));
+        restaurantRepository.getExistedOrBelonged(userId, restaurantId);
+        return createTo(menuRepository.getExistedByDate(restaurantId, date));
     }
-///
+
     @GetMapping(value = "/{restaurantId}/menus")
     @Operation(summary = "Get all menus of restaurant")
     public List<Menu> getAll(@PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get all menus of the restaurant with id= {} by user with id= {}", restaurantId, userId);
-        return repository.getAllExistedOrBelonged(userId, restaurantId);
+        return menuRepository.getAllExistedOrBelonged(userId, restaurantId);
     }
-///
+
     @PostMapping(value = "/{restaurantId}/menus", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     @Operation(summary = "Create new restaurants menu for specified date")
@@ -77,13 +81,14 @@ public class AdminMenuController {
         int userId = authUser.id();
         log.info("create {} for restaurant id= {} by user with id= {}", menu, restaurantId, userId);
         checkNew(menu);
+        restaurantRepository.getExistedOrBelonged(userId, restaurantId);
         Menu created = service.save(userId, restaurantId, menu);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.id()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
-///
+
     @DeleteMapping("/{restaurantId}/menus/{menuId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete restaurant menu by id")
@@ -92,7 +97,8 @@ public class AdminMenuController {
     public void delete(@PathVariable int restaurantId, @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("delete menu with id= {} by user with id= {}", menuId, userId);
-        Menu menu = repository.getExistedOrBelonged(userId, menuId);
-        repository.delete(menu);
+        restaurantRepository.getExistedOrBelonged(userId, restaurantId);
+        Menu menu = menuRepository.getExisted(menuId);
+        menuRepository.delete(menu);
     }
 }

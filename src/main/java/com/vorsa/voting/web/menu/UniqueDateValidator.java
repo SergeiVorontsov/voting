@@ -2,7 +2,6 @@ package com.vorsa.voting.web.menu;
 
 import com.vorsa.voting.model.Menu;
 import com.vorsa.voting.repository.MenuRepository;
-import com.vorsa.voting.web.AuthUser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.lang.NonNull;
@@ -33,8 +32,7 @@ public class UniqueDateValidator implements org.springframework.validation.Valid
             // https://stackoverflow.com/questions/36739808/how-can-i-get-pathvariable-inside-filterregistrationbean-spring-boot
             Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
             int restaurantId = Integer.parseInt((String) pathVariables.get("restaurantId"));
-            menuRepository.getByDate(restaurantId, menu.getDate(),
-                    AuthUser.authUser().id()).ifPresent(dbMenu -> errors.rejectValue("date", "", EXCEPTION_DUPLICATE_DATE));
+            menuRepository.getByDate(restaurantId, menu.getDate()).ifPresent(dbMenu -> errors.rejectValue("date", "", EXCEPTION_DUPLICATE_DATE));
         }
     }
 }

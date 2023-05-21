@@ -4,7 +4,6 @@ import com.vorsa.voting.model.Meal;
 import com.vorsa.voting.repository.MealRepository;
 import com.vorsa.voting.util.JsonUtil;
 import com.vorsa.voting.web.AbstractControllerTest;
-import com.vorsa.voting.web.user.UserTestData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,7 +16,7 @@ import static com.vorsa.voting.web.meal.MealTestData.*;
 import static com.vorsa.voting.web.menu.MenuTestData.ADMIN_RESTAURANT1_MENU1_ID;
 import static com.vorsa.voting.web.restaurant.RestaurantTestData.ADMIN_RESTAURANT1_ID;
 import static com.vorsa.voting.web.user.UserTestData.ADMIN_MAIL;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,6 +44,16 @@ class AdminMealControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_MATCHER.contentJson(adminRestaurant1Menu1Meal1));
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void getAll() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_MEAL))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_MATCHER.contentJson(adminRestaurant1Menu1Meal1, adminRestaurant1Menu1Meal2));
     }
 
     @Test
@@ -79,6 +88,6 @@ class AdminMealControllerTest extends AbstractControllerTest {
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL_MEAL_SLASH + ADMIN_RESTAURANT1_MENU1_MEAL1_ID))
                 .andExpect(status().isNoContent());
-        assertFalse(repository.get(ADMIN_RESTAURANT1_MENU1_MEAL1_ID, UserTestData.ADMIN_ID).isPresent());
+        assertNull(repository.get(ADMIN_RESTAURANT1_MENU1_MEAL1_ID));
     }
 }
