@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Configuration;
                         <p>This is a voting system for deciding where to have lunch.<br>
                         2 types of users: admin and regular users.<br>
                         Admin can input a restaurant and it's lunch menu of the day (just a dish name and price).<br>
-                        Admin can create new menus, new meals, update meals.<br>
+                        Admin can create new menus, new dishes, update dishes.<br>
                         Users can vote for a restaurant they want to have lunch at today.<br>
                         Only one vote counted per user.<br>
                         If user votes again the same day:<br>

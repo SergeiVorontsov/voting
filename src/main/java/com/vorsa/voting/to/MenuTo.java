@@ -1,6 +1,6 @@
 package com.vorsa.voting.to;
 
-import com.vorsa.voting.model.Meal;
+import com.vorsa.voting.model.Dish;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
@@ -13,11 +13,11 @@ import java.util.List;
 @ToString(callSuper = true)
 public class MenuTo extends BaseTo {
     LocalDate date;
-    List<Meal> meals;
+    List<Dish> dishes;
 
-    public MenuTo(Integer id, LocalDate date, List<Meal> meals) {
+    public MenuTo(Integer id, LocalDate date, List<Dish> dishes) {
         super(id);
         this.date = date;
-        this.meals = meals;
+        this.dishes = dishes;
     }
 }

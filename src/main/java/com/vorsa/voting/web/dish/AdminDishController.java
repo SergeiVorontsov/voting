@@ -1,9 +1,9 @@
-package com.vorsa.voting.web.meal;
+package com.vorsa.voting.web.dish;
 
-import com.vorsa.voting.model.Meal;
-import com.vorsa.voting.repository.MealRepository;
+import com.vorsa.voting.model.Dish;
+import com.vorsa.voting.repository.DishRepository;
 import com.vorsa.voting.repository.RestaurantRepository;
-import com.vorsa.voting.service.MealService;
+import com.vorsa.voting.service.DishService;
 import com.vorsa.voting.web.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,14 +29,14 @@ import static com.vorsa.voting.util.validation.ValidationUtil.checkNew;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@Tag(name = "Meal", description = "Admin meal management APIs. Admin can managed only meals of menus of restaurants that he created ")
-@RequestMapping(value = AdminMealController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-public class AdminMealController {
+@Tag(name = "Dish", description = "Admin dish management APIs. Admin can managed only dishes of menus of restaurants that he created ")
+@RequestMapping(value = AdminDishController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+public class AdminDishController {
     static final String REST_URL = "/api/admin/restaurants";
 
     private final RestaurantRepository restaurantRepository;
-    private final MealRepository mealRepository;
-    private final MealService service;
+    private final DishRepository dishRepository;
+    private final DishService service;
     private final UniqueNameValidator nameValidator;
 
     @InitBinder
@@ -44,72 +44,72 @@ public class AdminMealController {
         binder.addValidators(nameValidator);
     }
 
-    @GetMapping(value = "/{restaurantId}/menus/{menuId}/meals/{mealId}")
-    @Operation(summary = "Get restaurant menu meal by id")
+    @GetMapping(value = "/{restaurantId}/menus/{menuId}/dishes/{dishId}")
+    @Operation(summary = "Get restaurant menu dish by id")
     @Transactional
-    public Meal get(@PathVariable int restaurantId, @PathVariable int menuId, @PathVariable int mealId,
+    public Dish get(@PathVariable int restaurantId, @PathVariable int menuId, @PathVariable int dishId,
                     @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
-        log.info("get meal with id= {} by user with id= {}", mealId, userId);
+        log.info("get dish with id= {} by user with id= {}", dishId, userId);
         restaurantRepository.getExistedOrBelonged(userId, restaurantId);
-        return mealRepository.getExisted(mealId);
+        return dishRepository.getExisted(dishId);
     }
 
-    @GetMapping(value = "/{restaurantId}/menus/{menuId}/meals")
-    @Operation(summary = "Get all meals of menu by id")
+    @GetMapping(value = "/{restaurantId}/menus/{menuId}/dishes")
+    @Operation(summary = "Get all dishes of menu by id")
     @Transactional
-    public List<Meal> getAll(@PathVariable int restaurantId, @PathVariable int menuId,
+    public List<Dish> getAll(@PathVariable int restaurantId, @PathVariable int menuId,
                              @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
-        log.info("get aal meals of menu with id= {} by user with id= {}", menuId, userId);
+        log.info("get all dishes of menu with id= {} by user with id= {}", menuId, userId);
         restaurantRepository.getExistedOrBelonged(userId, restaurantId);
-        return mealRepository.getAll(menuId);
+        return dishRepository.getAll(menuId);
     }
 
-    @PostMapping(value = "/{restaurantId}/menus/{menuId}/meals", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{restaurantId}/menus/{menuId}/dishes", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Create new meal for specified restaurant menu")
+    @Operation(summary = "Create new dish for specified restaurant menu")
     @Transactional
     @CacheEvict(value = "restaurants", allEntries = true)
-    public ResponseEntity<Meal> createWithLocation(@Valid @RequestBody Meal meal, @PathVariable int restaurantId,
+    public ResponseEntity<Dish> createWithLocation(@Valid @RequestBody Dish dish, @PathVariable int restaurantId,
                                                    @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
-        log.info("add {} for thr restaurant with id= {} for the menu with id= {} by user with id ={}",
-                meal, restaurantId, menuId, userId);
-        checkNew(meal);
+        log.info("add {} for the restaurant with id= {} for the menu with id= {} by user with id ={}",
+                dish, restaurantId, menuId, userId);
+        checkNew(dish);
         restaurantRepository.getExistedOrBelonged(userId, restaurantId);
-        Meal created = service.save(menuId, meal);
+        Dish created = service.save(menuId, dish);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    @PutMapping(value = "/{restaurantId}/menus/{menuId}/meals/{mealId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{restaurantId}/menus/{menuId}/dishes/{dishId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Update meal by Id")
+    @Operation(summary = "Update dish by Id")
     @Transactional
     @CacheEvict(value = "restaurants", allEntries = true)
-    public void update(@Valid @RequestBody Meal meal, @PathVariable int restaurantId,
-                       @PathVariable int menuId, @PathVariable int mealId, @AuthenticationPrincipal AuthUser authUser) {
+    public void update(@Valid @RequestBody Dish dish, @PathVariable int restaurantId,
+                       @PathVariable int menuId, @PathVariable int dishId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
-        log.info("update {} by user with id= {}", meal, userId);
-        assureIdConsistent(meal, mealId);
+        log.info("update {} by user with id= {}", dish, userId);
+        assureIdConsistent(dish, dishId);
         restaurantRepository.getExistedOrBelonged(userId, restaurantId);
-        mealRepository.getExisted(mealId);
-        service.save(menuId, meal);
+        dishRepository.getExisted(dishId);
+        service.save(menuId, dish);
     }
 
-    @DeleteMapping("/{restaurantId}/menus/{menuId}/meals/{mealId}")
+    @DeleteMapping("/{restaurantId}/menus/{menuId}/dishes/{dishId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Delete meal by id")
+    @Operation(summary = "Delete dish by id")
     @Transactional
     @CacheEvict(value = "restaurants", allEntries = true)
     public void delete(@PathVariable int restaurantId,
-                       @PathVariable int menuId, @PathVariable int mealId, @AuthenticationPrincipal AuthUser authUser) {
+                       @PathVariable int menuId, @PathVariable int dishId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
-        log.info("delete meal with id= {} by user with id= {}", mealId, userId);
+        log.info("delete dish with id= {} by user with id= {}", dishId, userId);
         restaurantRepository.getExistedOrBelonged(userId, restaurantId);
-        Meal meal = mealRepository.getExisted(mealId);
-        mealRepository.delete(meal);
+        Dish dish = dishRepository.getExisted(dishId);
+        dishRepository.delete(dish);
     }
 }

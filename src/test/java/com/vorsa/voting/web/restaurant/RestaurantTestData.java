@@ -12,7 +12,7 @@ import static com.vorsa.voting.web.user.UserTestData.*;
 
 public class RestaurantTestData {
     public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "user", "menus");
-    public static MatcherFactory.Matcher<RestaurantTo> RESTAURANT_TO_WITH_MENU_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(RestaurantTo.class, "menus.meals");
+    public static MatcherFactory.Matcher<RestaurantTo> RESTAURANT_TO_WITH_MENU_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(RestaurantTo.class, "menus.dishes");
 
     public static final int ADMIN_RESTAURANT1_ID = 1;
     public static final int ADMIN_RESTAURANT2_ID = 2;

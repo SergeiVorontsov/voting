@@ -5,7 +5,7 @@ This is a voting system for deciding where to have lunch.
 2 types of users: admin and regular users. 
 
 Admin can input a restaurant and it's lunch menu of the day (just a dish name and price).
-Admin can create new menus, new meals, update meals. 
+Admin can create new menus, new dishes, update dishes. 
 
 Users can vote for a restaurant they want to have lunch at today.
 Only one vote counted per user.

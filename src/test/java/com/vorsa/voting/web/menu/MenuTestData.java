@@ -8,11 +8,11 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
-import static com.vorsa.voting.web.meal.MealTestData.*;
+import static com.vorsa.voting.web.dish.DishTestData.*;
 import static com.vorsa.voting.web.restaurant.RestaurantTestData.*;
 
 public class MenuTestData {
-    public static final MatcherFactory.Matcher<Menu> MENU_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Menu.class, "restaurant", "meals");
+    public static final MatcherFactory.Matcher<Menu> MENU_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Menu.class, "restaurant", "dishes");
     public static final MatcherFactory.Matcher<MenuTo> MENU_TO_MATCHER = MatcherFactory.usingEqualsComparator(MenuTo.class);
 
     public static final int ADMIN_RESTAURANT1_MENU1_ID = 1;
@@ -29,13 +29,13 @@ public class MenuTestData {
 
     static {
         adminMenu1ForRestaurant1.setRestaurant(adminRestaurant1);
-        adminMenu1ForRestaurant1WithDishes.setMeals(List.of(adminRestaurant1Menu1Meal1, adminRestaurant1Menu1Meal2));
+        adminMenu1ForRestaurant1WithDishes.setDishes(List.of(ADMIN_RESTAURANT_1_MENU_1_DISH_1, ADMIN_RESTAURANT_1_MENU_1_DISH_2));
         adminMenu2ForRestaurant1.setRestaurant(adminRestaurant1);
-        adminMenu2ForRestaurant1.setMeals(List.of(adminRestaurant1Menu2Meal1, adminRestaurant1Menu2Meal2));
+        adminMenu2ForRestaurant1.setDishes(List.of(ADMIN_RESTAURANT_1_MENU_2_DISH_1, ADMIN_RESTAURANT_1_MENU_2_DISH_2));
         adminMenu1ForRestaurant2.setRestaurant(adminRestaurant2);
-        adminMenu1ForRestaurant2WithDishes.setMeals(List.of(adminRestaurant2Menu1Meal1, adminRestaurant2Menu1Meal2, adminRestaurant2Menu1Meal3));
+        adminMenu1ForRestaurant2WithDishes.setDishes(List.of(ADMIN_RESTAURANT_2_MENU_1_DISH_1, ADMIN_RESTAURANT_2_MENU_1_DISH_2, ADMIN_RESTAURANT_2_MENU_1_DISH_3));
         anotherAdminMenu.setRestaurant(anotherAdminRestaurant);
-        anotherAdminMenu.setMeals(Collections.emptyList());
+        anotherAdminMenu.setDishes(Collections.emptyList());
     }
 
     public static Menu getNew() {

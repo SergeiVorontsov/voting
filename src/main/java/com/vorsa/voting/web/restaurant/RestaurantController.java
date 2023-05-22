@@ -45,7 +45,6 @@ public class RestaurantController {
     }
 
     @GetMapping("/with-today-menu")
-    @Cacheable(cacheNames = "restaurants")
     @Operation(summary = "Get all restaurants with today menu")
     public List<RestaurantTo> getAllWithMenu() {
         log.info("get all restaurants with today menus");

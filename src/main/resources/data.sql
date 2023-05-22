@@ -1,10 +1,10 @@
-INSERT INTO USERS (name, email, password)
+INSERT INTO USERS (NAME, EMAIL, PASSWORD)
 VALUES ('User', 'user@yandex.ru', '{noop}password'),
        ('Admin', 'admin@gmail.com', '{noop}admin'),
        ('Guest', 'guest@gmail.com', '{noop}guest'),
        ('AnotherAdmin', 'another@admin.com', '{noop}another');
 
-INSERT INTO USER_ROLE (role, user_id)
+INSERT INTO USER_ROLE (ROLE, USER_ID)
 VALUES ('USER', 1),
        ('ADMIN', 2),
        ('USER', 2),
@@ -21,7 +21,7 @@ VALUES (current_date(), 1),
        ('2023-02-10', 1),
        (current_date(), 2);
 
-INSERT INTO MEAL (name, PRICE, MENU_ID)
+INSERT INTO DISH (NAME, PRICE, MENU_ID)
 VALUES ('Filet', 80, 1),
        ('Steak', 90, 1),
        ('Pizza', 50, 2),

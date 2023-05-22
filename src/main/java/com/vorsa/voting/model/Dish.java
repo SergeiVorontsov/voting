@@ -7,17 +7,17 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "meal",
+@Table(name = "dish",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "meal_unique_id_menu_id_idx",
+                        name = "dish_unique_id_menu_id_idx",
                         columnNames = {"menu_id", "name"})
         })
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
-public class Meal extends NamedEntity {
+public class Dish extends NamedEntity {
 
     @Column(name = "price")
     private Long price;
@@ -29,7 +29,7 @@ public class Meal extends NamedEntity {
     @JsonIgnore
     private Menu menu;
 
-    public Meal(Integer id, String name, Long price, Menu menu) {
+    public Dish(Integer id, String name, Long price, Menu menu) {
         super(id, name);
         this.price = price;
         this.menu = menu;

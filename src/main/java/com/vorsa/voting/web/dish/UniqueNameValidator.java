@@ -1,7 +1,7 @@
-package com.vorsa.voting.web.meal;
+package com.vorsa.voting.web.dish;
 
-import com.vorsa.voting.model.Meal;
-import com.vorsa.voting.repository.MealRepository;
+import com.vorsa.voting.model.Dish;
+import com.vorsa.voting.repository.DishRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.lang.NonNull;
@@ -16,28 +16,28 @@ import java.util.Map;
 @AllArgsConstructor
 public class UniqueNameValidator implements org.springframework.validation.Validator {
 
-    public static final String EXCEPTION_DUPLICATE_NAME = "Meal with this name already exists in this menu";
+    public static final String EXCEPTION_DUPLICATE_NAME = "Dish with this name already exists in this menu";
 
-    private final MealRepository mealRepository;
+    private final DishRepository dishRepository;
     private final HttpServletRequest request;
 
     @Override
     public boolean supports(@NonNull Class<?> clazz) {
-        return Meal.class.isAssignableFrom(clazz);
+        return Dish.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(@NonNull Object target, @NonNull Errors errors) {
-        Meal meal = ((Meal) target);
-        if (StringUtils.hasText(meal.getName())) {
+        Dish dish = ((Dish) target);
+        if (StringUtils.hasText(dish.getName())) {
             Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
             int menuId = Integer.parseInt((String) pathVariables.get("menuId"));
-            mealRepository.findByNameAndMenuIgnoreCase(meal.getName().toLowerCase(), menuId)
-                    .ifPresent(dbMeal -> {
+            dishRepository.findByNameAndMenuIgnoreCase(dish.getName().toLowerCase(), menuId)
+                    .ifPresent(dbDish -> {
                         if (request.getMethod().equals("PUT")) {
-                            int dbId = dbMeal.id();
+                            int dbId = dbDish.id();
 
-                            if (meal.getId() != null && dbId == meal.id()) return;
+                            if (dish.getId() != null && dbId == dish.id()) return;
 
                             String requestURI = request.getRequestURI();
                             if (requestURI.endsWith("/" + dbId))

@@ -43,7 +43,7 @@ public class Menu extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     @ToString.Exclude
-    private List<Meal> meals;
+    private List<Dish> dishes;
 
     public Menu(Integer id, Restaurant restaurant, LocalDate date) {
         super(id);

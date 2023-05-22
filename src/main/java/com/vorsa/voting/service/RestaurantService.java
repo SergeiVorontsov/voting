@@ -2,7 +2,7 @@ package com.vorsa.voting.service;
 
 import com.vorsa.voting.model.Menu;
 import com.vorsa.voting.model.Restaurant;
-import com.vorsa.voting.repository.MealRepository;
+import com.vorsa.voting.repository.DishRepository;
 import com.vorsa.voting.repository.RestaurantRepository;
 import com.vorsa.voting.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
-    private final MealRepository mealRepository;
+    private final DishRepository dishRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -41,7 +41,7 @@ public class RestaurantService {
 
     private Restaurant setMenuWithDishes(Restaurant restaurant) {
         Menu menu = restaurant.getMenus().get(0);
-        menu.setMeals(mealRepository.getAll(menu.id()));
+        menu.setDishes(dishRepository.getAll(menu.id()));
         return restaurant;
     }
 }
