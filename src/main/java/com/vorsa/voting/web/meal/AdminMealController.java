@@ -46,6 +46,7 @@ public class AdminMealController {
 
     @GetMapping(value = "/{restaurantId}/menus/{menuId}/meals/{mealId}")
     @Operation(summary = "Get restaurant menu meal by id")
+    @Transactional
     public Meal get(@PathVariable int restaurantId, @PathVariable int menuId, @PathVariable int mealId,
                     @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
@@ -56,16 +57,19 @@ public class AdminMealController {
 
     @GetMapping(value = "/{restaurantId}/menus/{menuId}/meals")
     @Operation(summary = "Get all meals of menu by id")
+    @Transactional
     public List<Meal> getAll(@PathVariable int restaurantId, @PathVariable int menuId,
                              @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get aal meals of menu with id= {} by user with id= {}", menuId, userId);
-        return mealRepository.getAll(userId, menuId);
+        restaurantRepository.getExistedOrBelonged(userId, restaurantId);
+        return mealRepository.getAll(menuId);
     }
 
     @PostMapping(value = "/{restaurantId}/menus/{menuId}/meals", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create new meal for specified restaurant menu")
+    @Transactional
     @CacheEvict(value = "restaurants", allEntries = true)
     public ResponseEntity<Meal> createWithLocation(@Valid @RequestBody Meal meal, @PathVariable int restaurantId,
                                                    @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {

@@ -58,6 +58,26 @@ class RestaurantControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(value = USER_MAIL)
+    void getWithMenuAndDishes() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + ADMIN_RESTAURANT1_ID + "/with-today-menu-and-dishes"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RESTAURANT_TO_WITH_MENU_TO_MATCHER.contentJson(getTos(copyOfAdminRestaurant1WithActualMenuAndDishes)));
+    }
+
+    @Test
+    @WithUserDetails(value = USER_MAIL)
+    void getAllWithMenuAndDishes() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "/with-today-menu-and-dishes"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RESTAURANT_TO_WITH_MENU_TO_MATCHER.contentJson(getTos(copyOfAdminRestaurant1WithActualMenuAndDishes, copyOfAdminRestaurant2WithActualMenuAndDishes)));
+    }
+
+    @Test
     void getUnauth() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL_SLASH + ADMIN_RESTAURANT1_ID))
                 .andExpect(status().isUnauthorized());
@@ -70,5 +90,4 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
 }

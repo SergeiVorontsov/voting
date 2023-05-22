@@ -24,6 +24,8 @@ public class RestaurantTestData {
     public static final Restaurant anotherAdminRestaurant = new Restaurant(ANOTHER_ADMIN_RESTAURANT_ID, "Alfa", null, Collections.emptyList());
 
     public static final Restaurant adminRestaurant1WithActualMenu = new Restaurant(ADMIN_RESTAURANT1_ID, "Domino Pizza", null, Collections.emptyList());
+    public static final Restaurant copyOfAdminRestaurant1WithActualMenuAndDishes = new Restaurant(adminRestaurant1WithActualMenu);
+    public static final Restaurant copyOfAdminRestaurant2WithActualMenuAndDishes = new Restaurant(adminRestaurant2);
 
     static {
         adminRestaurant1.setUser(admin);
@@ -34,6 +36,8 @@ public class RestaurantTestData {
         anotherAdminRestaurant.setUser(anotherAdmin);
         anotherAdminRestaurant.setMenus(anotherAdminMenu);
         adminRestaurant1WithActualMenu.setMenus(adminMenu1ForRestaurant1);
+        copyOfAdminRestaurant1WithActualMenuAndDishes.setMenus(adminMenu1ForRestaurant1WithDishes);
+        copyOfAdminRestaurant2WithActualMenuAndDishes.setMenus(adminMenu1ForRestaurant2WithDishes);
     }
 
     public static Restaurant getNew() {

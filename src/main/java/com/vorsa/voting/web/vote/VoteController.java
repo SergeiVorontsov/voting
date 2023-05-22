@@ -1,6 +1,7 @@
 package com.vorsa.voting.web.vote;
 
 import com.vorsa.voting.model.Vote;
+import com.vorsa.voting.repository.VoteRepository;
 import com.vorsa.voting.service.VoteService;
 import com.vorsa.voting.web.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -25,6 +28,15 @@ public class VoteController {
     static final String REST_URL = "/api/votes";
 
     private final VoteService service;
+    private final VoteRepository repository;
+
+    @GetMapping
+    @Operation(summary = "Get today vote")
+    public Optional<Vote> get(@AuthenticationPrincipal AuthUser authUser) {
+        int userId = authUser.id();
+        log.info("get today vote belong to user with id= {} ", userId);
+        return repository.getExistedByDate(userId, LocalDate.now());
+    }
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)

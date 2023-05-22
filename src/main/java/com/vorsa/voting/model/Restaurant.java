@@ -24,7 +24,7 @@ public class Restaurant extends NamedEntity {
     @JsonIgnore
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+    @OneToMany(mappedBy = "restaurant")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @OrderBy("date DESC")
     @ToString.Exclude

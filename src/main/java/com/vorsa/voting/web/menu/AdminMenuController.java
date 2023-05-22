@@ -49,6 +49,7 @@ public class AdminMenuController {
 
     @GetMapping(value = "/{restaurantId}/menus/{menuId}")
     @Operation(summary = "Get restaurants menu by id")
+    @Transactional
     public MenuTo get(@PathVariable int restaurantId, @PathVariable int menuId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get menu with id= {} by user with id= {}", menuId, userId);
@@ -58,6 +59,7 @@ public class AdminMenuController {
 
     @GetMapping("/{restaurantId}/menus/by-date")
     @Operation(summary = "Get restaurants menu by its date for")
+    @Transactional
     public MenuTo getByDate(@PathVariable int restaurantId, @RequestParam LocalDate date, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get menu of restaurant  with id= {} for the date= {} by user with id= {}", restaurantId, date, userId);
@@ -67,15 +69,18 @@ public class AdminMenuController {
 
     @GetMapping(value = "/{restaurantId}/menus")
     @Operation(summary = "Get all menus of restaurant")
+    @Transactional
     public List<Menu> getAll(@PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get all menus of the restaurant with id= {} by user with id= {}", restaurantId, userId);
-        return menuRepository.getAllExistedOrBelonged(userId, restaurantId);
+        restaurantRepository.getExistedOrBelonged(userId, restaurantId);
+        return menuRepository.getAll(restaurantId);
     }
 
     @PostMapping(value = "/{restaurantId}/menus", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     @Operation(summary = "Create new restaurants menu for specified date")
+    @Transactional
     @CacheEvict(value = "restaurants", allEntries = true)
     public ResponseEntity<Menu> createWithLocation(@Valid @RequestBody Menu menu, @PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();

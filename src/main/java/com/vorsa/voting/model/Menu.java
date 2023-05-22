@@ -27,7 +27,7 @@ import static com.vorsa.voting.util.DateUtil.DATE_PATTERN;
 @ToString(callSuper = true)
 public class Menu extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ToString.Exclude
@@ -39,9 +39,10 @@ public class Menu extends BaseEntity {
     @DateTimeFormat(pattern = DATE_PATTERN)
     private LocalDate date = LocalDate.now();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "menu")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "menu")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
+    @ToString.Exclude
     private List<Meal> meals;
 
     public Menu(Integer id, Restaurant restaurant, LocalDate date) {
